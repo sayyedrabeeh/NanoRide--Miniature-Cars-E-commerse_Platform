@@ -1,0 +1,701 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collector Management Vault | NanoRide Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #080808;
+            --bg-sidebar: #0f0f0f;
+            --bg-card: #161616;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --accent-green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            padding: 0 30px 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-brand span {
+            color: var(--accent-gold);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .nav-item.active i {
+            color: #000;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 80px;
+            background: rgba(8, 8, 8, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 280px;
+            z-index: 999;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-icon {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .action-icon:hover {
+            color: var(--accent-gold);
+        }
+
+        .badge-pulse {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .admin-profile:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .admin-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .content-wrapper {
+            margin-left: 280px;
+            padding: 120px 40px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+        }
+
+        .stats-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stats-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Users Table --- */
+        .card-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .vault-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .vault-table th {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .vault-table td {
+            background: var(--bg-dark);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .vault-table tr td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .vault-table tr td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .user-id {
+            font-family: 'Courier New', monospace;
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-name {
+            font-weight: 600;
+            display: block;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .status-blocked {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .role-badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .role-admin {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .btn-vault {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .btn-vault:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .btn-block-action {
+            color: var(--accent-red);
+            border-color: rgba(230, 57, 70, 0.2);
+        }
+
+        .btn-block-action:hover {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+        }
+
+        .btn-unblock-action {
+            color: var(--accent-green);
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        .btn-unblock-action:hover {
+            background: var(--accent-green);
+            color: #fff;
+            border-color: var(--accent-green);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand span,
+            .nav-item span {
+                display: none;
+            }
+
+            .sidebar-brand {
+                padding: 0 20px 40px;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .top-bar {
+                left: 80px;
+            }
+
+            .content-wrapper {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-car-side"></i>
+            <span>NANORIDE<span>.</span></span>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'products:home' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Storefront</span>
+            </a>
+            <a href="{% url 'reports:admin_dashboard' %}" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'order:order_admin' %}" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="{% url 'products:products_admin' %}" class="nav-item">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a>
+            <a href="{% url 'products:catogery' %}" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="{% url 'products:Type' %}" class="nav-item">
+                <i class="fas fa-layer-group"></i>
+                <span>Types</span>
+            </a>
+            <a href="{% url 'offers_coupons:coupon' %}" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Coupons</span>
+            </a>
+
+            <a href="{% url 'reports:sales_report' %}" class="nav-item ">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Sales Reports</span>
+            </a>
+            <a href="{% url 'user_profile:users' %}" class="nav-item active">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+         
+        </nav>
+        <div class="px-4 mt-auto">
+            <a href="/logout/" class="nav-item text-danger border border-danger border-opacity-25">
+                <i class="fas fa-power-off"></i>
+                <span>Security Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Find collectors by name, ID or email...">
+        </div>
+
+        <div class="admin-actions">
+            <div class="action-icon">
+                <i class="far fa-bell"></i>
+                <div class="badge-pulse"></div>
+            </div>
+            <div class="admin-profile">
+                <img src="{% static 'images/3.jpeg' %}" alt="Admin" class="admin-avatar">
+                <span class="admin-name">{{ user.username|default:"System Admin" }}</span>
+                <i class="fas fa-chevron-down small text-muted"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <div class="page-header">
+            <div>
+                <h2>Collector Management</h2>
+                <p>Overseeing the global fraternity of high-performance model enthusiasts.</p>
+            </div>
+        </div>
+
+        <!-- User Statistics -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-users"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{{ users.count }}</span>
+                    <span class="stats-label">Total Collectors</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-success"><i class="fas fa-user-check"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with active=0 %}{% for u in users %}{% if u.is_active %}{{ active|add:1 }}{% endif %}{% endfor %}{{ active|default:users.count }}{% endwith %}</span>
+                    <span class="stats-label">Active Manifests</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-danger"><i class="fas fa-user-slash"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with blocked=0 %}{% for u in users %}{% if not u.is_active %}{{ blocked|add:1 }}{% endif %}{% endfor %}{{ blocked }}{% endwith %}</span>
+                    <span class="stats-label">Access Restricted</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-gold"><i class="fas fa-user-shield"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with admins=0 %}{% for u in users %}{% if u.is_staff %}{{ admins|add:1 }}{% endif %}{% endfor %}{{ admins }}{% endwith %}</span>
+                    <span class="stats-label">Privileged Tier</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Registry Table -->
+        <div class="card-table">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="m-0 fw-bold">Secure Registry</h4>
+            </div>
+
+            {% if users %}
+            <div class="table-responsive">
+                <table class="vault-table">
+                    <thead>
+                        <tr>
+                            <th>ID Manifest</th>
+                            <th>Collector Profile</th>
+                            <th>Tier / Role</th>
+                            <th>Access Status</th>
+                            <th class="text-end">Command Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td><span class="user-id">#{{ user.id }}</span></td>
+                            <td>
+                                <div class="user-info">
+                                    {% if user.profile_image %}
+                                    <img src="{{ user.profile_image.url }}" class="user-avatar" alt="User">
+                                    {% else %}
+                                    <img src="{% static 'images/profile.png' %}" class="user-avatar" alt="User">
+                                    {% endif %}
+                                    <div>
+                                        <span class="user-name">{{ user.username }}</span>
+                                        <span class="user-email">{{ user.email }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="role-badge {% if user.is_staff %}role-admin{% endif %}">
+                                    <i
+                                        class="fas {% if user.is_staff %}fa-shield-alt{% else %}fa-user-circle{% endif %}"></i>
+                                    {{ user.is_staff|yesno:"Command Tier,Standard Tier" }}
+                                </div>
+                            </td>
+                            <td>
+                                <span
+                                    class="status-badge {% if user.is_active %}status-active{% else %}status-blocked{% endif %}">
+                                    {{ user.is_active|yesno:"Authorized,Revoked" }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <form action="{% url 'user_profile:blockuser' user.id %}" method="post"
+                                    class="d-inline">
+                                    {% csrf_token %}
+                                    {% if user.is_active %}
+                                    <button class="btn-vault btn-block-action" type="submit" title="Restrict Access">
+                                        <i class="fas fa-user-slash"></i>
+                                    </button>
+                                    {% else %}
+                                    <button class="btn-vault btn-unblock-action" type="submit" title="Restore Access">
+                                        <i class="fas fa-user-check"></i>
+                                    </button>
+                                    {% endif %}
+                                </form>
+                                <button class="btn-vault ms-2" title="Inspect Protocol">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-users-slash text-muted mb-3 fs-1"></i>
+                <p class="text-muted">No collectors found in the current manifest registry.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="content-wrapper py-4 mt-0 bg-transparent border-top border-secondary border-opacity-10">
+        <div class="d-flex justify-content-between align-items-center text-muted small">
+            <div>&copy; 2026 NanoRide Intelligence v2.1</div>
+            <div>Automotive Collectors Global Registry Management</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

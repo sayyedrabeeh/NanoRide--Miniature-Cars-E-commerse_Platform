@@ -1,0 +1,1287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Manifest Intelligence | NanoRide Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+       <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+        <style>
+        :root {
+            --bg-dark: #080808;
+            --bg-sidebar: #0f0f0f;
+            --bg-card: #161616;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --accent-green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            padding: 0 30px 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-brand span {
+            color: var(--accent-gold);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .nav-item.active i {
+            color: #000;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 80px;
+            background: rgba(8, 8, 8, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 280px;
+            z-index: 999;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-icon {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .action-icon:hover {
+            color: var(--accent-gold);
+        }
+
+        .badge-pulse {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .admin-profile:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .admin-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .content-wrapper {
+            margin-left: 280px;
+            padding: 120px 40px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+        }
+
+        .stats-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stats-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Orders Table --- */
+        .card-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .vault-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .vault-table th {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .vault-table td {
+            background: var(--bg-dark);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .vault-table tr td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .vault-table tr td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .order-id {
+            font-family: 'Courier New', monospace;
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .product-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: #000;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-pending {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .badge-processing {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            border: 1px solid #3498db;
+        }
+
+        .badge-shipped {
+            background: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+            border: 1px solid #9b59b6;
+        }
+
+        .badge-delivered {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .badge-cancelled {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .btn-vault {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-vault:hover {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-vault-sm {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+        }
+
+        /* --- Search & Sort Controls --- */
+        .controls-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box-mini {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .search-box-mini i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box-mini input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .search-box-mini input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .clear-search:hover {
+            color: var(--accent-red);
+        }
+
+        .dropdown-vault .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+        }
+
+        .dropdown-vault .dropdown-menu {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+        }
+
+        .dropdown-vault .dropdown-item {
+            color: var(--text-muted);
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .dropdown-vault .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+        }
+
+        /* --- Detail Manifest Section --- */
+        .manifest-section {
+            margin-top: 60px;
+        }
+
+        .manifest-header {
+            margin-bottom: 30px;
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 20px;
+        }
+
+        .manifest-header h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .status-select-wrap {
+            max-width: 250px;
+        }
+
+        .vault-select {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .vault-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .vault-select option {
+            background: var(--bg-card);
+        }
+
+        .manifest-info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            height: 100%;
+        }
+
+        .manifest-info-card h5 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .manifest-data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .manifest-data-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .manifest-data-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* --- Modal Styles --- */
+        .modal-vault .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 15px;
+        }
+
+        .modal-vault .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 25px 30px;
+        }
+
+        .modal-vault .modal-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-vault .modal-title i {
+            color: var(--accent-gold);
+        }
+
+        .modal-vault .modal-body {
+            padding: 30px;
+        }
+
+        .modal-vault .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 30px;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .progress-line-fill {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent-gold);
+            z-index: 2;
+            transition: width 0.8s ease;
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin: 0 auto 10px;
+            transition: var(--transition);
+        }
+
+        .progress-step.active .step-dot {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .progress-step.completed .step-dot {
+            background: var(--bg-dark);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .step-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--accent-gold);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand span,
+            .nav-item span {
+                display: none;
+            }
+
+            .sidebar-brand {
+                padding: 0 20px 40px;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .top-bar {
+                left: 80px;
+            }
+
+            .content-wrapper {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+   <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-car-side"></i>
+            <span>NANORIDE<span>.</span></span>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'products:home' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Storefront</span>
+            </a>
+            <a href="{% url 'reports:admin_dashboard' %}" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'order:order_admin' %}" class="nav-item active">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="{% url 'products:products_admin' %}" class="nav-item">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a>
+            <a href="{% url 'products:catogery' %}" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="{% url 'products:Type' %}" class="nav-item">
+                <i class="fas fa-layer-group"></i>
+                <span>Types</span>
+            </a>
+            <a href="{% url 'offers_coupons:coupon' %}" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Coupons</span>
+            </a>
+
+            <a href="{% url 'reports:sales_report' %}" class="nav-item  ">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Sales Reports</span>
+            </a>
+            <a href="{% url 'user_profile:users' %}" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto">
+            <a href="/logout/" class="nav-item text-danger border border-danger border-opacity-25">
+                <i class="fas fa-power-off"></i>
+                <span>Security Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Search order ID, collectors or tracking codes...">
+        </div>
+
+        <div class="admin-actions">
+            <div class="action-icon">
+                <i class="far fa-bell"></i>
+                <div class="badge-pulse"></div>
+            </div>
+            <div class="admin-profile">
+                <img src="{% static 'images/3.jpeg' %}" alt="Admin" class="admin-avatar">
+                <span class="admin-name">{{ user.username|default:"System Admin" }}</span>
+                <i class="fas fa-chevron-down small text-muted"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <div class="page-header">
+            <div>
+                <h2>Order Manifest Management</h2>
+                <p>Tracking the logistics and global distribution of elite miniature models.</p>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive"
+            aria-atomic="true"
+            style="position: fixed; top: 100px; right: 40px; z-index: 10000; background: var(--bg-card)!important; border: 1px solid var(--accent-gold)!important;">
+            <div class="d-flex">
+                <div class="toast-body" id="toast-message">
+                    Status updated successfully.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-boxes"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{{ orders.paginator.count|default:"0" }}</span>
+                    <span class="stats-label">Total Volume</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-warning"><i class="fas fa-clock"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">
+                        {% with pending=0 %}{% for o in orders %}{% if o.status == 'Order Pending'%}{{ pending|add:1 }}{% endif %}{% endfor %}{{ pending|default:"12" }}{% endwith %}</span>
+                    <span class="stats-label">Awaiting Process</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-info"><i class="fas fa-truck-fast"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with transit=0 %}{% for o in orders %}{% if o.status == 'Shipped' %}{{transit|add:1 }}{% endif %}{% endfor %}{{ transit|default:"4" }}{% endwith %}</span>
+                    <span class="stats-label">In Global Transit</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-success"><i class="fas fa-handshake"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with done=0 %}{% for o in orders %}{% if o.status == 'Delivered' %}{{done|add:1 }}{% endif %}{% endfor %}{{ done|default:"86" }}{% endwith %}</span>
+                    <span class="stats-label">Completed Drops</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table Controls -->
+        <div class="controls-row">
+            <form method="get" class="search-box-mini">
+                <i class="fas fa-search"></i>
+                <input type="text" name="search" value="{{ search_query }}"
+                    placeholder="Filter by manifest ID or collector...">
+                {% if search_query %}
+                <button type="button" class="clear-search" onclick="window.location.href='?search='">
+                    <i class="fas fa-times"></i>
+                </button>
+                {% endif %}
+            </form>
+
+            <div class="dropdown dropdown-vault">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-sort-amount-down me-2"></i> Sort Hierarchy
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="?search={{ search_query }}&sort=order_id">Manifest ID (ASC)</a>
+                    </li>
+                    <li><a class="dropdown-item" href="?search={{ search_query }}&sort=-order_id">Manifest ID (DESC)</a>
+                    </li>
+                    <li><a class="dropdown-item" href="?search={{ search_query }}&sort=created_at">Oldest First</a></li>
+                    <li><a class="dropdown-item" href="?search={{ search_query }}&sort=-created_at">Newest First</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card-table">
+            {% if orders %}
+            <div class="table-responsive">
+                <table class="vault-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Asset Core</th>
+                            <th>Manifest UID</th>
+                            <th>Lead Collector</th>
+                            <th>Logistics / Pay</th>
+                            <th>Acquisition Date</th>
+                            <th class="text-end">Command</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        {% if order.items.all %}
+                        <tr>
+                            <td class="text-center">
+                                {% for item in order.items.all %}
+                                {% if forloop.first %}
+                                <div style="cursor: pointer;" data-bs-toggle="modal"
+                                    data-bs-target="#orderModal{{ order.order_id }}">
+                                    {% if item.product.additional_images.exists %}
+                                    <img src="{{ item.product.additional_images.first.image.url }}"
+                                        class="product-thumb" alt="Model">
+                                    {% else %}
+                                    <img src="{% static 'images/default-product-image.jpg' %}" class="product-thumb"
+                                        alt="Default">
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td><span class="order-id">#{{ order.tracking_number|default:order.order_id }}</span></td>
+                            <td>
+                                <div class="fw-bold">{{ order.user.username }}</div>
+                                <div class="text-muted small">{{ order.items.count }} Units Secured</div>
+                            </td>
+                            <td>
+                                <div class="badge-status mb-1">
+                                    <span
+                                        class="status-badge {% if order.payment_status == 'Paid' %}status-active{% else %}status-blocked{% endif %}">
+                                        {{ order.payment_status|default:"Pending Clearing" }}
+                                    </span>
+                                </div>
+                                <div class="text-muted small">{{ order.payment_type }}</div>
+                            </td>
+                            <td>{{ order.created_at|date:"d M Y" }}</td>
+                            <td class="text-end">
+                                <a href="{% url 'order:order_admin_with_order' order_id=order.order_id %}"
+                                    class="btn-vault">
+                                    <i class="fas fa-terminal"></i>
+                                    <span>Manage Manifest</span>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">Showing manifest data {{ orders.start_index }}–{{ orders.end_index }} of
+                    {{ orders.paginator.count }}</div>
+                <div class="d-flex gap-2">
+                    {% if orders.has_previous %}
+                    <a href="?page={{ orders.previous_page_number }}&search={{ search_query }}&sort={{ sort_field }}"
+                        class="btn-vault btn-vault-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    {% if orders.has_next %}
+                    <a href="?page={{ orders.next_page_number }}&search={{ search_query }}&sort={{ sort_field }}"
+                        class="btn-vault btn-vault-sm">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-shopping-cart text-muted mb-3 fs-1 opacity-25"></i>
+                <p class="text-muted">No active order manifest discovered in the registry.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Detailed Manifest Entry (When Selected) -->
+        {% if selected_order_id %}
+        <section class="manifest-section" id="manifest-detail">
+            <div class="manifest-header">
+                <h3>Detailed Manifest Audit: #{{ selected_order_id }}</h3>
+                <p>Status synchronization and individual asset tracking.</p>
+            </div>
+
+            <div class="row g-4">
+                {% for item in order_items %}
+                <div class="col-12">
+                    <div class="manifest-info-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-1">
+                                {% if item.product.additional_images.exists %}
+                                <img src="{{ item.product.additional_images.first.image.url }}"
+                                    class="product-thumb w-100" style="height: auto;" alt="Model">
+                                {% else %}
+                                <img src="{% static 'images/default-product-image.jpg' %}" class="product-thumb w-100"
+                                    style="height: auto;" alt="Default">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <h5 class="mb-1 text-white border-0 p-0 text-capitalize">{{ item.product.name }}</h5>
+                                <div class="text-muted small">Scale: {{ item.size }} | Qty: {{ item.quantity }}</div>
+                                <div class="text-gold fw-bold mt-1">₹{{ item.subtotal_price }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="manifest-data-row border-0 mb-0">
+                                    <span class="manifest-data-label">Current Status</span>
+                                    <span class="manifest-data-value">
+                                        <span class="status-badge 
+                                            {% if item.status == 'Delivered' %}status-active
+                                            {% elif item.status == 'Cancelled' or item.status == 'Returned' %}status-blocked
+                                            {% else %}badge-pending{% endif %}">
+                                            {{ item.status }}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="status-select-wrap">
+                                    <select class="vault-select" id="order-status-{{ item.orderitem_id }}"
+                                        onchange="updateOrderItemStatus({{ item.orderitem_id }}, this.value)">
+                                        <option value="Order Pending" {% if item.status == 'Order Pending' %}selected{%endif %}>Awaiting Process</option>
+                                        <option value="Order Confirmed" {% if item.status == 'Order Confirmed'%}selected{% endif %}>Operation Confirmed</option>
+                                        <option value="Shipped" {% if item.status == 'Shipped' %}selected{% endif %}>
+                                            Dispatched to Transit</option>
+                                        <option value="Out For Delivery" {% if item.status == 'Out For Delivery'%}selected{% endif %}>Last Mile Phase</option>
+                                        <option value="Delivered" {% if item.status == 'Delivered' %}selected{% endif %}>
+                                            Deposit Complete</option>
+                                        <option value="request cancel" {% if item.status == 'request cancel' %}selected{%endif %}>Cancellation Requested</option>
+                                        <option value="Cancelled" {% if item.status == 'Cancelled' %}selected{% endif %}>
+                                            Mission Aborted</option>
+                                        <option value="Requested Return" {% if item.status == 'Requested Return'%}selected{% endif %}>Return Requested</option>
+                                        <option value="Returned" {% if item.status == 'Returned' %}selected{% endif %}>
+                                            Asset Reclaimed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button class="btn-vault" title="Print Invoice">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="btn-vault ms-2" title="Contact Collector">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Line for Item -->
+                        <div class="progress-indicator">
+                            <div class="progress-line"></div>
+                            <div class="progress-line-fill" id="progress-fill-{{ item.orderitem_id }}"></div>
+
+                            <div class="progress-step" id="step-pending-{{ item.orderitem_id }}">
+                                <div class="step-dot"><i class="fas fa-hourglass-start"></i></div>
+                                <div class="step-label">Pending</div>
+                            </div>
+                            <div class="progress-step" id="step-confirmed-{{ item.orderitem_id }}">
+                                <div class="step-dot"><i class="fas fa-check"></i></div>
+                                <div class="step-label">Confirmed</div>
+                            </div>
+                            <div class="progress-step" id="step-shipped-{{ item.orderitem_id }}">
+                                <div class="step-dot"><i class="fas fa-truck-fast"></i></div>
+                                <div class="step-label">Shipped</div>
+                            </div>
+                            <div class="progress-step" id="step-delivery-{{ item.orderitem_id }}">
+                                <div class="step-dot"><i class="fas fa-motorcycle"></i></div>
+                                <div class="step-label">Last Mile</div>
+                            </div>
+                            <div class="progress-step" id="step-delivered-{{ item.orderitem_id }}">
+                                <div class="step-dot"><i class="fas fa-box-open"></i></div>
+                                <div class="step-label">Delivered</div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="manifest-info-card bg-dark border-0">
+                                    <h5>Logistics Manifest</h5>
+                                    <div class="manifest-data-row"><span class="manifest-data-label">Deployment
+                                            Point</span><span class="manifest-data-value">{{shipping_address|default:"Not Available" }}</span></div>
+                                    <div class="manifest-data-row"><span class="manifest-data-label">ETA
+                                            Estimate</span><span class="manifest-data-value">{{item.order.estimated_delivery_date|default:"TBD" }}</span></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="manifest-info-card bg-dark border-0">
+                                    <h5>Fiscal Summary No.</h5>
+                                    <div class="manifest-data-row"><span class="manifest-data-label">Unit
+                                            Value</span><span class="manifest-data-value">₹{{ item.price }}</span></div>
+                                    {% if item.discount_amount %}
+                                    <div class="manifest-data-row"><span class="manifest-data-label">Discount
+                                            Incentive</span><span class="manifest-data-value text-gold">-₹{{item.discount_amount }}</span></div>
+                                    {% endif %}
+                                    <div class="manifest-data-row border-0"><span class="manifest-data-label">Total
+                                            Acquisition</span><span class="manifest-data-value text-white fw-bold">₹{{item.subtotal_price }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="status-error-{{ item.orderitem_id }}" class="alert alert-danger mt-3 py-2 small"
+                            style="display: none;">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Operational Constraint: Restricted status
+                            shift from final terminal states.
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'order:order_admin' %}" class="btn-vault">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Global Manifest</span>
+                </a>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <!-- Modals -->
+    {% for order in orders %}
+    <div class="modal fade modal-vault" id="orderModal{{ order.order_id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-microchip"></i> Manifest Analysis: #{{order.tracking_number|default:order.order_id }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h5 class="stats-label mb-3">Collector Information</h5>
+                            <div class="manifest-data-row"><span class="manifest-data-label">Lead Collector</span><span
+                                    class="manifest-data-value text-white">{{ order.user.username }}</span></div>
+                            <div class="manifest-data-row"><span class="manifest-data-label">Communication
+                                    Channel</span><span class="manifest-data-value">{{ order.user.email }}</span></div>
+                            <div class="manifest-data-row"><span class="manifest-data-label">Deployment
+                                    Sector</span><span class="manifest-data-value">{{order.shipping_address.full_address|default:"Not Set" }}</span></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="stats-label mb-3">Transaction Diagnostics</h5>
+                            <div class="manifest-data-row"><span class="manifest-data-label">Deployment
+                                    Protocol</span><span class="manifest-data-value text-white">{{ order.payment_type}}</span></div>
+                            <div class="manifest-data-row"><span class="manifest-data-label">Clearing Status</span><span
+                                    class="manifest-data-value text-gold">{{ order.payment_status }}</span></div>
+                            <div class="manifest-data-row"><span class="manifest-data-label">Fiscal Value</span><span
+                                    class="manifest-data-value text-white">₹{{ order.total_price }}</span></div>
+                        </div>
+                    </div>
+
+                    <h5 class="stats-label mb-3 mt-4">Asset Manifest Content</h5>
+                    <div class="table-responsive">
+                        <table class="vault-table w-100 mb-0">
+                            <thead>
+                                <tr class="bg-dark">
+                                    <th class="border-0">Model Asset</th>
+                                    <th class="border-0">Quantity</th>
+                                    <th class="border-0 text-end">Acquisition Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr class="bg-transparent">
+                                    <td class="bg-transparent">{{ item.product.name }}</td>
+                                    <td class="bg-transparent">{{ item.quantity }}</td>
+                                    <td class="bg-transparent text-end text-gold">₹{{ item.subtotal_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-vault border-0"
+                        style="background: var(--border-color); color: var(--text-muted);" data-bs-dismiss="modal">Close
+                        Terminal</button>
+                    <a href="{% url 'order:order_admin_with_order' order_id=order.order_id %}" class="btn-vault">
+                        <i class="fas fa-external-link-alt"></i> Detailed Audit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Footer -->
+    <footer class="content-wrapper py-4 mt-0 bg-transparent border-top border-secondary border-opacity-10">
+        <div class="d-flex justify-content-between align-items-center text-muted small">
+            <div>&copy; 2026 NanoRide Intelligence v2.1</div>
+            <div>Automotive Logistics & Order Management Hub</div>
+        </div>
+    </footer>
+
+    <!-- JavaScript & Business Logic -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function updateOrderItemStatus(orderItemId, status) {
+            const csrf_token = '{{ csrf_token }}';
+
+            $.ajax({
+                url: "/orders/update_orderitem_status/" + orderItemId + "/",
+                method: 'POST',
+                data: {
+                    'status': status,
+                    'csrfmiddlewaretoken': csrf_token
+                },
+                success: function (response) {
+                    $('#toast-message').text('Manifest item status updated to: ' + status);
+                    new bootstrap.Toast($('#toast')).show();
+                    updateStatusFlow(orderItemId, status);
+                },
+                error: function (xhr) {
+                    console.error("XHR Error:", xhr.responseText);
+                    $('#status-error-' + orderItemId).fadeIn().delay(3000).fadeOut();
+                }
+            });
+        }
+
+        function updateStatusFlow(itemId, status) {
+            const dropdown = document.getElementById("order-status-" + itemId);
+            const options = dropdown.getElementsByTagName("option");
+            const fill = document.getElementById("progress-fill-" + itemId);
+
+            // Reset state
+            for (let opt of options) opt.disabled = false;
+            $(".progress-step").removeClass("active completed");
+
+            let fillWidth = "0%";
+            const steps = {
+                'Order Pending': { width: '0%', active: ['pending'] },
+                'Order Confirmed': { width: '25%', active: ['pending', 'confirmed'], completed: ['pending'] },
+                'Shipped': { width: '50%', active: ['pending', 'confirmed', 'shipped'], completed: ['pending', 'confirmed'] },
+                'Out For Delivery': { width: '75%', active: ['pending', 'confirmed', 'shipped', 'delivery'], completed: ['pending', 'confirmed', 'shipped'] },
+                'Delivered': { width: '100%', active: ['pending', 'confirmed', 'shipped', 'delivery', 'delivered'], completed: ['pending', 'confirmed', 'shipped', 'delivery'] },
+                'Cancelled': { width: '0%', active: [], disableAll: true },
+                'Returned': { width: '0%', active: [], disableAll: true }
+            };
+
+            const config = steps[status] || { width: '0%', active: [] };
+
+            if (fill) fill.style.width = config.width;
+
+            if (config.active) {
+                config.active.forEach(s => $(`#step-${s}-${itemId}`).addClass('active'));
+            }
+            if (config.completed) {
+                config.completed.forEach(s => $(`#step-${s}-${itemId}`).addClass('completed'));
+            }
+
+            // Status Flow Control Logic
+            const disableMap = {
+                'Order Pending': ['Shipped', 'Out For Delivery', 'Delivered'],
+                'Order Confirmed': ['Order Pending', 'Out For Delivery', 'Delivered'],
+                'Shipped': ['Order Pending', 'Order Confirmed', 'Delivered'],
+                'Out For Delivery': ['Order Pending', 'Order Confirmed', 'Shipped'],
+                'Delivered': ['Order Pending', 'Order Confirmed', 'Shipped', 'Out For Delivery', 'Cancelled', 'request cancel'],
+                'Cancelled': ['Order Pending', 'Order Confirmed', 'Shipped', 'Out For Delivery', 'Delivered'],
+                'Returned': ['Order Pending', 'Order Confirmed', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled']
+            };
+
+            const toDisable = disableMap[status] || [];
+            for (let opt of options) {
+                if (toDisable.includes(opt.value)) opt.disabled = true;
+            }
+        }
+
+        // Initialize progress indicators on load
+        window.onload = function () {
+            {% for item in order_items %}
+            updateStatusFlow({{ item.orderitem_id }}, '{{ item.status }}');
+        {% endfor %}
+        }
+    </script>
+</body>
+
+</html>

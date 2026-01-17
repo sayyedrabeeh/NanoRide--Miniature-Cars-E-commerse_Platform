@@ -1,0 +1,690 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Collector Profile | AutoGallery</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+            <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-sidebar: #0f0f0f;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #262626;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Global Elements --- */
+        .btn-gold {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            font-weight: 700;
+            transition: var(--transition);
+            padding: 10px 25px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-gold:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-outline-gold {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 10px 25px;
+            border-radius: 6px;
+        }
+
+        .btn-outline-gold:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        /* --- Profile Header --- */
+        .profile-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-meta-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-gold);
+            padding: 5px;
+            background: var(--bg-card);
+        }
+
+        .btn-upload {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #fff;
+            color: #000;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-upload:hover {
+            transform: scale(1.1);
+            background: var(--accent-gold);
+        }
+
+        .user-details h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .collector-badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--accent-gold);
+            text-transform: uppercase;
+        }
+
+        /* --- Layout --- */
+        .dashboard-container {
+            padding: 60px 0;
+        }
+
+        .profile-sidebar {
+            background: var(--bg-sidebar);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(212, 175, 55, 0.05);
+            color: var(--accent-gold);
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .nav-link.logout {
+            color: var(--accent-red);
+        }
+
+        .nav-link.logout:hover {
+            background: rgba(230, 57, 70, 0.05);
+        }
+
+        /* --- Dashboard Cards --- */
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            height: 100%;
+            border-bottom: 4px solid var(--border-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-bottom-color: var(--accent-gold);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .stat-val {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* --- Sections --- */
+        .account-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .section-header h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* --- Forms --- */
+        .profile-form label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .form-control,
+        .form-select {
+            background: #000 !important;
+            border: 1px solid var(--border-color);
+            color: #fff !important;
+            padding: 12px 15px;
+            border-radius: 8px;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .form-control:disabled {
+            background: #050505 !important;
+            border-color: #1a1a1a;
+            color: #555 !important;
+        }
+
+        /* --- Orders Preview --- */
+        .order-row {
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 25px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .order-row:hover {
+            border-color: var(--accent-gold);
+            background: #050505;
+        }
+
+        .order-status {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .status-delivered {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+        }
+
+        .status-processing {
+            background: rgba(255, 165, 0, 0.1);
+            color: #ffa500;
+        }
+
+        /* --- Wishlist Shortcut --- */
+        .wishlist-item-mini {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .mini-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        /* --- Modals --- */
+        .modal-content {
+            background: var(--bg-card);
+            color: #fff;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        .modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--accent-gold);
+        }
+
+        @media (max-width: 991px) {
+            .profile-sidebar {
+                margin-bottom: 40px;
+            }
+
+            .user-meta-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Profile Hero -->
+    <header class="profile-hero">
+        <div class="container">
+            <div class="user-meta-header">
+                <form method="post" action="{% url 'user_profile:profile' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="avatar-container">
+                        {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="Collector" class="avatar-img">
+                        {% else %}
+                        <img src="{% static 'images/profile.png' %}" alt="Collector" class="avatar-img">
+                        {% endif %}
+                        <input type="file" name="profile_picture" id="profilePictureInput" accept="image/*"
+                            style="display: none;" onchange="this.form.submit()">
+                        <label for="profilePictureInput" class="btn-upload"><i class="fas fa-camera"></i></label>
+                    </div>
+                </form>
+                <div class="user-details">
+                    <h1>{{ user.username }}</h1>
+                    <p>{{ user.email }}</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="collector-badge"><i class="fas fa-certificate me-2 text-gold"></i> Elite
+                            Member</span>
+                        <span class="text-muted small align-self-center">Collector since 2024</span>
+                    </div>
+                </div>
+                <div class="ms-lg-auto">
+                    <a href="{% url 'products:home' %}" class="btn-outline-gold"><i class="fas fa-arrow-left me-2"></i>
+                        Back to Gallery</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-container container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show border-0 rounded-3 mb-4"
+            role="alert">
+            <i
+                class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row g-5">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar">
+                    <a href="{% url 'user_profile:profile' %}" class="nav-link active"><i
+                            class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="{% url 'order:orders' %}" class="nav-link"><i class="fas fa-box"></i> My Orders</a>
+                    <a href="{% url 'products:wishlist' 'view' %}" class="nav-link"><i class="fas fa-heart"></i> My
+                        Wishlist</a>
+                    <a href="{% url 'user_profile:address' %}" class="nav-link"><i class="fas fa-map-marker-alt"></i>
+                        Saved Addresses</a>
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i
+                            class="fas fa-key"></i> Security Settings</a>
+                    <a href="{% url 'authentication:custom_logout' %}" class="nav-link logout"><i
+                            class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <!-- Stat Cards -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <i class="fas fa-shopping-bag stat-icon"></i>
+                            <span class="stat-val">{{ total_orders_count|default:"0" }}</span>
+                            <span class="stat-label">Total Orders</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <i class="fas fa-heart stat-icon"></i>
+                            <span class="stat-val">{{ wishlist_items_count|default:"0" }}</span>
+                            <span class="stat-label">Wishlist Items</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <i class="fas fa-wallet stat-icon"></i>
+                            <span class="stat-val">₹{{ wallet_balance|default:"0.00" }}</span>
+                            <span class="stat-label">Wallet Balance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <section class="account-section">
+                    <div class="section-header">
+                        <h3>Personal Information</h3>
+                        <button class="btn-gold btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal"><i
+                                class="fas fa-edit me-2"></i> Edit Profile</button>
+                    </div>
+                    <div class="row gy-4">
+                        <div class="col-md-6">
+                            <label>Real Name</label>
+                            <div class="form-control-plaintext text-white fw-bold">{{ user.username }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Primary Email</label>
+                            <div class="form-control-plaintext text-white fw-bold">{{ user.email }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Phone Number</label>
+                            <div class="form-control-plaintext text-white fw-bold">{{ user.phone|default:"Not Provided"}}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Location</label>
+                            <div class="form-control-plaintext text-white fw-bold">{{ user.city }}, {{ user.country }}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="row g-4">
+                    <!-- Recent Orders -->
+                    <div class="col-xl-7">
+                        <section class="account-section h-100">
+                            <div class="section-header">
+                                <h3>Recent Acquisitions</h3>
+                                <a href="#" class="text-gold small text-decoration-none">View All</a>
+                            </div>
+                            <div class="order-preview">
+                                {% for order in recent_orders %}
+                                <div class="order-row d-flex justify-content-between align-items-center"
+                                    onclick="window.location='{% url 'order:order_with_order' order.order_id %}'">
+                                    <div>
+                                        <div class="fw-bold mb-1">#{{ order.tracking_number|upper }}</div>
+                                        <div class="text-muted small">{{ order.created_at|date:"M d, Y" }}</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="fw-bold">₹{{ order.total_price }}</div>
+                                        <div class="text-muted small">{{ order.items.count }} Item{{order.items.count|pluralize }}</div>
+                                    </div>
+                                    <span
+                                        class="order-status {% if order.payment_status == 'Success' %}status-delivered{% elif order.payment_status == 'Pending' %}status-processing{% else %}text-danger{% endif %}">{{ order.payment_status }}</span>
+                                </div>
+                                {% empty %}
+                                <div class="text-center py-4">
+                                    <p class="text-muted small mb-0">No recent acquisitions found.</p>
+                                    <a href="{% url 'products:products' %}"
+                                        class="text-gold small text-decoration-none">Start Collection</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Wishlist Snippet -->
+                    <div class="col-xl-5">
+                        <section class="account-section h-100">
+                            <div class="section-header">
+                                <h3>Wishlist Reserve</h3>
+                                <a href="{% url 'products:wishlist' 'view' %}"
+                                    class="text-gold small text-decoration-none">Explore All</a>
+                            </div>
+                            <div class="wishlist-preview">
+                                {% for item in wishlist_preview %}
+                                <div class="wishlist-item-mini"
+                                    onclick="window.location='{% url 'products:products_detail' item.product.id %}'">
+                                    <img src="{% if item.product.additional_images.first %}{{ item.product.additional_images.first.image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                                        class="mini-thumb" alt="{{ item.product.name }}">
+                                    <div>
+                                        <div class="fw-bold small">{{ item.product.name|truncatechars:20 }}</div>
+                                        <div class="text-gold small fw-bold">₹{{ item.product.price }}</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right ms-auto text-muted"></i>
+                                </div>
+                                {% empty %}
+                                <div class="text-center py-4">
+                                    <p class="text-muted small mb-0">Your reserve is currently empty.</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'user_profile:editprofile' %}" class="profile-form">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Collector Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Username</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" class="form-control" value="{{ user.phone }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Date of Birth</label>
+                            <input type="date" name="dob" class="form-control" value="{{ user.dob }}" required>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6 mb-3">
+                                <label>Gender</label>
+                                <select class="form-select" name="gender">
+                                    <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female
+                                    </option>
+                                    <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>City</label>
+                                <input type="text" name="city" class="form-control" value="{{ user.city }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-gold">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'user_profile:change_password' %}" class="profile-form">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Security Overhaul</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3"><label>Current Password</label><input type="password" name="current_password"
+                                class="form-control" required></div>
+                        <div class="mb-3"><label>New Password</label><input type="password" name="new_password"
+                                class="form-control" required></div>
+                        <div class="mb-3"><label>Confirm Access Key</label><input type="password"
+                                name="confirm_password" class="form-control" required></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-gold">Update Key</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <div class="footer-logo">NANORIDE<span>.</span></div>
+            <p class="text-muted small">Join the world's most exclusive club for automotive miniature collectors.</p>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="#" class="text-muted"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-muted"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-muted"><i class="fab fa-twitter"></i></a>
+            </div>
+            <div class="text-muted small mt-4 pt-4 border-top border-secondary">
+                &copy; 2026 NanoRide Collectibles. Your Passion, Our Masterpieces.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Automatic modal open if Django detects errors (handled by template logic if needed)
+        {% if modal_open %}
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        });
+        {% endif %}
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1409 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Master Directive | NanoRide Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #080808;
+            --bg-sidebar: #0f0f0f;
+            --bg-card: #161616;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --accent-green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            padding: 0 30px 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-brand span {
+            color: var(--accent-gold);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .nav-item.active i {
+            color: #000;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 80px;
+            background: rgba(8, 8, 8, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 280px;
+            z-index: 999;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-icon {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .action-icon:hover {
+            color: var(--accent-gold);
+        }
+
+        .badge-pulse {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .admin-profile:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .admin-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .content-wrapper {
+            margin-left: 280px;
+            padding: 120px 40px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+        }
+
+        .stats-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stats-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Controls & Filters --- */
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box-mini {
+            position: relative;
+            flex-grow: 1;
+            min-width: 300px;
+        }
+
+        .search-box-mini i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box-mini input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .search-box-mini input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .clear-search:hover {
+            color: var(--accent-red);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .vault-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .vault-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        /* --- Products Table --- */
+        .card-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .vault-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .vault-table th {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .vault-table td {
+            background: var(--bg-dark);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .vault-table tr td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .vault-table tr td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .product-thumb {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: #000;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .product-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-gold);
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .badge-inactive {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .scale-badge {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .btn-vault {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-vault:hover {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-vault-gold {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-vault-gold:hover {
+            background: #b8962d;
+            border-color: #b8962d;
+            color: #000;
+        }
+
+        .btn-vault-outline-info {
+            color: #3498db;
+            border-color: rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-vault-outline-info:hover {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-vault-outline-warning {
+            color: var(--accent-gold);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-vault-outline-warning:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        /* --- Modal Styles --- */
+        .modal-vault .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 15px;
+        }
+
+        .modal-vault .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 25px 30px;
+        }
+
+        .modal-vault .modal-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-vault .modal-title i {
+            color: var(--accent-gold);
+        }
+
+        .modal-vault .modal-body {
+            padding: 30px;
+        }
+
+        .modal-vault .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 30px;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .vault-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .vault-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: #000;
+        }
+
+        .vault-input::placeholder {
+            color: #444;
+        }
+
+        .stock-row {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stock-row .form-check-input {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-color: var(--border-color);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .stock-row .form-check-input:checked {
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+
+        /* Cropper Customization */
+        #previewContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .cropper-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* --- Pagination --- */
+        .pagination-vault .page-link {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .pagination-vault .page-link:hover {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+            z-index: 1;
+        }
+
+        .pagination-vault .page-item.active .page-link {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .pagination-vault .page-item.disabled .page-link {
+            background: var(--bg-dark);
+            border-color: var(--border-color);
+            color: #333;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand span,
+            .nav-item span {
+                display: none;
+            }
+
+            .sidebar-brand {
+                padding: 0 20px 40px;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .top-bar {
+                left: 80px;
+            }
+
+            .content-wrapper {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-car-side"></i>
+            <span>NANORIDE<span>.</span></span>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'products:home' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Storefront</span>
+            </a>
+            <a href="{% url 'reports:admin_dashboard' %}" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'order:order_admin' %}" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="{% url 'products:products_admin' %}" class="nav-item active">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a>
+            <a href="{% url 'products:catogery' %}" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="{% url 'products:Type' %}" class="nav-item">
+                <i class="fas fa-layer-group"></i>
+                <span>Types</span>
+            </a>
+            <a href="{% url 'offers_coupons:coupon' %}" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Coupons</span>
+            </a>
+
+            <a href="{% url 'reports:sales_report' %}" class="nav-item ">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Sales Reports</span>
+            </a>
+            <a href="{% url 'user_profile:users' %}" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto">
+            <a href="/logout/" class="nav-item text-danger border border-danger border-opacity-25">
+                <i class="fas fa-power-off"></i>
+                <span>Security Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Search product UID, brands or specifications...">
+        </div>
+
+        <div class="admin-actions">
+            <div class="action-icon">
+                <i class="far fa-bell"></i>
+                <div class="badge-pulse"></div>
+            </div>
+            <div class="admin-profile">
+                <img src="{% static 'images/3.jpeg' %}" alt="Admin" class="admin-avatar">
+                <span class="admin-name">{{ user.username|default:"System Admin" }}</span>
+                <i class="fas fa-chevron-down small text-muted"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <div class="page-header">
+            <div>
+                <h2>Inventory Master Directive</h2>
+                <p>Curating and managing the elite fleet of miniature automotive legends.</p>
+            </div>
+            <button class="btn-vault btn-vault-gold" data-bs-toggle="modal" data-bs-target="#createProductModal">
+                <i class="fas fa-plus"></i>
+                <span>Commision New Model</span>
+            </button>
+        </div>
+
+        <!-- Messages / Toasts -->
+        {% if messages %}
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10001; margin-top: 80px;">
+            {% for message in messages %}
+            <div class="toast show animate__animated animate__fadeInRight" role="alert" aria-live="assertive"
+                aria-atomic="true"
+                style="background: var(--bg-card); border-left: 4px solid {% if message.tags == 'success' %}var(--accent-green){% else %}var(--accent-red){% endif %};">
+                <div class="toast-header bg-transparent text-white border-0 py-3">
+                    <i
+                        class="fas {% if message.tags == 'success' %}fa-check-circle text-success{% else %}fa-exclamation-triangle text-danger{% endif %} me-2"></i>
+                    <strong class="me-auto">Systems Notification</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body text-white-50 pt-0">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"
+            style="z-index: 10001; margin-top: 80px;"></div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-car"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{{ products.paginator.count|default:"0" }}</span>
+                    <span class="stats-label">Total Fleet</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-success"><i class="fas fa-check-double"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with listed_count=0 %}{% for prod in products %}{% if prod.status == 'listed' %}{{ listed_count|add:1 }}{% endif %}{% endfor %}{{ listed_count|default:"Active"}}{%endwith %}</span>
+                    <span class="stats-label">Active Commission</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-warning"><i class="fas fa-exclamation-circle"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with low_stock=0 %}{% for prod in products %}{% if prod.total_stock < 5 %}{{ low_stock|add:1 }}{% endif %}{% endfor %}{{ low_stock|default:"Monitor" }}{% endwith%}</span>
+                            <span class="stats-label">Stock Warnings</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-info"><i class="fas fa-gem"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with featured=0 %}{% for prod in products %}{% if prod.offer > 0  %}{{featured|add:1 }}{% endif %}{% endfor %}{{ featured|default:"Ltd" }}{% endwith %}</span>
+                    <span class="stats-label">Special Edits</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters & Sort -->
+        <div class="controls-row">
+            <form method="GET" class="search-box-mini">
+                <i class="fas fa-search"></i>
+                <input type="text" name="search" value="{{ search_query }}"
+                    placeholder="Filter by name, SKU or brand core...">
+                {% if search_query %}
+                <button type="button" class="clear-search" onclick="location.href='?search='">
+                    <i class="fas fa-times"></i>
+                </button>
+                {% endif %}
+            </form>
+
+            <form method="GET" class="filter-group">
+                <input type="hidden" name="search" value="{{ search_query }}">
+                <select name="sort_by" class="vault-select" onchange="this.form.submit()">
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort: Name Hierarchy</option>
+                    <option value="original_price" {% if sort_by == 'original_price' %}selected{% endif %}>Sort: Price
+                        Tier</option>
+                    <option value="id" {% if sort_by == 'id' %}selected{% endif %}>Sort: Entry ID</option>
+                </select>
+                <select name="sort_order" class="vault-select" onchange="this.form.submit()">
+                    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending Flow</option>
+                    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending Flow</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Inventory Registry Table -->
+        <div class="card-table">
+            <div class="table-responsive">
+                <table class="vault-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Visual Asset</th>
+                            <th>Brand Core</th>
+                            <th>Model Identity</th>
+                            <th>Logistics Specs</th>
+                            <th>Fiscal Value</th>
+                            <th>Status</th>
+                            <th class="text-end">Command</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if products %}
+                        {% for i in products %}
+                        <tr>
+                            <td class="text-center">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#productModal{{ i.id }}">
+                                    {% if i.additional_images.all.0.image.url %}
+                                    <img src="{{ i.additional_images.all.0.image.url }}" alt="{{ i.name }}"
+                                        class="product-thumb">
+                                    {% else %}
+                                    <img src="{% static 'images/default-product-image.jpg' %}" alt="Placeholder"
+                                        class="product-thumb">
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <div>{{ i.category.brand_name }}</div>
+                                <div class="text-muted small">Type: {{ i.Types.category }}</div>
+                            </td>
+                            <td>
+                                <div class="fw-bold">{{ i.name }}</div>
+                                <div class="text-gold small">{% if i.offer > 0 %}Incentive Applied: {{ i.offer }}%{%else %}Standard Acquisition{% endif %}</div>
+                            </td>
+                            <td>
+                                {% for product_size in i.size_stock %}
+                                <div class="small d-flex justify-content-between mb-1" style="max-width: 120px;">
+                                    <span class="scale-badge">{{ product_size.size_name }}</span>
+                                    <span
+                                        class="{% if product_size.stock < 5 %}text-danger fw-bold{% else %}text-muted{% endif %}">{{product_size.stock }} Units</span>
+                                </div>
+                                {% endfor %}
+                                <div class="border-top border-secondary border-opacity-25 mt-1 pt-1 small">
+                                    Total Reserve: {{ i.total_stock }}
+                                </div>
+                            </td>
+                            <td class="text-white fw-bold">₹{{ i.price }}</td>
+                            <td>
+                                {% if i.status == 'listed' %}
+                                <span class="status-badge badge-active">Active</span>
+                                {% else %}
+                                <span class="status-badge badge-inactive">Offline</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="btn-vault btn-vault-outline-info" data-bs-toggle="modal"
+                                        data-bs-target="#editProductModal{{ i.id }}" title="Edit Configuration">
+                                        <i class="fas fa-sliders-h"></i>
+                                    </button>
+                                    <form method="POST" action="{% url 'products:products_admin' %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="toggle_status">
+                                        <input type="hidden" name="product_id" value="{{ i.id }}">
+                                        <button type="submit" class="btn-vault btn-vault-outline-warning"
+                                            title="{% if i.status == 'listed' %}Decommission{% else %}Commission{% endif %}">
+                                            <i
+                                                class="fas {% if i.status == 'listed' %}fa-power-off{% else %}fa-play{% endif %}"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="fas fa-box-open text-muted mb-3 fs-1 opacity-25"></i>
+                                <p class="text-muted">No model assets discovered in the inventory registry.</p>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Registry Pagination -->
+            {% if products.has_other_pages %}
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">Accessing inventory block {{ products.number }} of {{ products.paginator.num_pages }}</div>
+                <nav>
+                    <ul class="pagination pagination-vault mb-0">
+                        {% if products.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page=1&search={{ search_query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}"><i
+                                    class="fas fa-angle-double-left"></i></a></li>
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{ products.previous_page_number }}&search={{ search_query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}"><i
+                                    class="fas fa-angle-left"></i></a></li>
+                        {% endif %}
+
+                        {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %} <li
+                            class="page-item"><a class="page-link"
+                                href="?page={{ num }}&search={{ search_query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}">{{ num }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if products.has_next %}
+                            <li class="page-item"><a class="page-link"
+                                    href="?page={{ products.next_page_number }}&search={{ search_query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}"><i
+                                        class="fas fa-angle-right"></i></a></li>
+                            <li class="page-item"><a class="page-link"
+                                    href="?page={{ products.paginator.num_pages }}&search={{ search_query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}"><i
+                                        class="fas fa-angle-double-right"></i></a></li>
+                            {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Detailed Analysis Modal -->
+    {% for i in products %}
+    <div class="modal fade modal-vault" id="productModal{{ i.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-microchip"></i> Model Diagnostic Audit: {{ i.name }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <div class="col-md-5">
+                            <div id="modalCarousel{{ i.id }}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner rounded border border-secondary border-opacity-25">
+                                    {% for image in i.additional_images.all %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ image.image.url }}" class="d-block w-100"
+                                            style="height: 300px; object-fit: contain; background: #000;"
+                                            alt="Asset View">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#modalCarousel{{ i.id }}" data-bs-slide="prev"><span
+                                        class="carousel-control-prev-icon"></span></button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#modalCarousel{{ i.id }}" data-bs-slide="next"><span
+                                        class="carousel-control-next-icon"></span></button>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label class="form-label">Brand Core</label>
+                                    <div class="text-white fw-bold">{{ i.category.brand_name }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Model Type</label>
+                                    <div class="text-white">{{ i.Types.category }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Standard Price</label>
+                                    <div class="text-white">₹{{ i.original_price }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Active Discount</label>
+                                    <div class="text-gold">{{ i.offer }}% Applied</div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Current Configuration Value</label>
+                                    <div class="text-accent-gold fw-bold fs-4" style="color: var(--accent-gold);">
+                                        ₹{{i.price }}</div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Logistics Reserve</label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for product_size in i.productsize_set.all %}
+                                        <span class="scale-badge">{{ product_size.size.name }}: {{
+                                            product_size.stock}}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="mt-2 small text-muted">Global Deployment Fleet: {{ i.total_stock }}
+                                        Units</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <label class="form-label">Asset Synopsis</label>
+                            <div class="bg-dark p-3 rounded border border-secondary border-opacity-10 text-white-50 small"
+                                style="white-space: pre-wrap;">{{ i.description }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-vault" style="background: var(--border-color); color: var(--text-muted);"
+                        data-bs-dismiss="modal">Close Terminal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Create Model Modal -->
+    <div class="modal fade modal-vault" id="createProductModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Commission New Inventory Asset</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" id="createProductForm" enctype="multipart/form-data"
+                    action="{% url 'products:products_admin' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+                    <div class="modal-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Brand Core selection</label>
+                                    <select class="vault-select w-100" name="category" required>
+                                        <option value="" disabled selected>Select Target Brand</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.brand_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Asset Classification</label>
+                                    <select class="vault-select w-100" name="Type" required>
+                                        <option value="" disabled selected>Select Model Type</option>
+                                        {% for type in types %}
+                                        <option value="{{ type.id }}">{{ type.category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Identity Designation (Name)</label>
+                                    <input type="text" class="vault-input" name="product_name" required
+                                        placeholder="e.g. 1967 Mustang Shelby GT500">
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Standard Price</label>
+                                        <input type="number" class="vault-input" name="price" required min="500"
+                                            placeholder="₹ Value">
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Incentive Tier (%)</label>
+                                        <input type="number" class="vault-input" name="offer" min="0" max="80"
+                                            placeholder="Discount %">
+                                    </div>
+                                </div>
+                                <div class="mb-0">
+                                    <label class="form-label">Asset Synopsis (Min 1000 characters for depth)</label>
+                                    <textarea class="vault-input" name="description" rows="5" required minlength="1000"
+                                        placeholder="Provide a deep dive into the model's history, scale details, and limited features..."></textarea>
+                                    <small id="charCount" class="text-muted d-block mt-1">Status: Waiting for
+                                        input...</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label mb-3 d-block">Scale & Reserve Logistics</label>
+                                <div class="row g-3">
+                                    {% for sz in sizes %}
+                                    <div class="col-6">
+                                        <div class="stock-row">
+                                            <div class="form-check m-0">
+                                                <input class="form-check-input" type="checkbox" name="size"
+                                                    value="{{ sz.name }}" id="sz_{{ sz.name }}"
+                                                    onchange="toggleStockField(this)">
+                                            </div>
+                                            <label class="m-0 flex-grow-1" for="sz_{{ sz.name }}"
+                                                style="cursor: pointer; font-size: 0.8rem;">Scale {{ sz.name }}</label>
+                                            <input type="number" class="vault-input py-1 px-2"
+                                                style="width: 60px; font-size: 0.8rem;" name="stock_{{ sz.name }}"
+                                                id="stock_{{ sz.name }}" placeholder="Qty" min="1" disabled>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="form-label">Visual Intelligence Captures (Multiselect)</label>
+                                    <input type="file" class="vault-input" id="productImagesCreate" name="images"
+                                        accept="image/*" multiple required>
+                                    <div id="previewContainer"></div>
+                                    <input type="hidden" name="cropped_images" id="croppedImages" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-vault"
+                            style="background: var(--border-color); color: var(--text-muted);"
+                            data-bs-dismiss="modal">Abort Mission</button>
+                        <button type="submit" class="btn-vault btn-vault-gold">Commission Asset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Model Modal -->
+    {% for i in products %}
+    <div class="modal fade modal-vault" id="editProductModal{{ i.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Adjust Inventory Prototype: {{ i.name }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" enctype="multipart/form-data" action="{% url 'products:products_admin' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="product_id" value="{{ i.id }}">
+                    <div class="modal-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Brand Core</label>
+                                    <select class="vault-select w-100" name="category" required>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if category.id == i.category.id%}selected{%endif %}>{{ category.brand_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Model Type</label>
+                                    <select class="vault-select w-100" name="Type" required>
+                                        {% for type in types %}
+                                        <option value="{{ type.id }}" {% if type.id == i.Types.id %}selected{% endif %}>
+                                            {{type.category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Identity Designation</label>
+                                    <input type="text" class="vault-input" name="name" value="{{ i.name }}" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Price</label>
+                                        <input type="number" class="vault-input" name="price"
+                                            value="{{ i.original_price }}" required min="500">
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Incentive (%)</label>
+                                        <input type="number" class="vault-input" name="offer" value="{{ i.offer }}"
+                                            min="0" max="80">
+                                    </div>
+                                </div>
+                                <div class="mb-0">
+                                    <label class="form-label">Asset Synopsis</label>
+                                    <textarea class="vault-input" name="description" rows="5" required
+                                        minlength="1000">{{ i.description }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label mb-3 d-block">Logistics Modification</label>
+                                <div class="row g-3">
+                                    {% for sz in sizes %}
+                                    <div class="col-6">
+                                        <div class="stock-row">
+                                            <div class="form-check m-0">
+                                                <input class="form-check-input" type="checkbox"
+                                                    name="size_{{ sz.name }}" value="{{ sz.name }}"
+                                                    onchange="toggleStockFieldEdit(this, '{{ i.id }}')"
+                                                    id="edit_sz_{{ sz.name }}_{{ i.id }}" {% for ps in i.productsize_set.all %}{% if ps.size.name == sz.name %}checked{%endif %}{% endfor %}>
+                                            </div>
+                                            <label class="m-0 flex-grow-1" for="edit_sz_{{ sz.name }}_{{ i.id }}"
+                                                style="font-size: 0.8rem;">Scale
+                                                {{ sz.name }}</label>
+                                            <input type="number" class="vault-input py-1 px-2"
+                                                style="width: 60px; font-size: 0.8rem;" name="stock_{{ sz.name }}"
+                                                id="edit_stock_{{ sz.name }}_{{ i.id }}" placeholder="Qty" min="0" {% with found_stock=False %}{% for ps in i.productsize_set.all %}{% if ps.size.name == sz.name %}value="{{ ps.stock }}" {% with found_stock=True%}{% endwith %}{% endif %}{% endfor %}{% if not found_stock %}disabled{%  endif %}{% endwith %}>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mt-4">
+                                    <label class="form-label">Update Asset Imagery (Single Overwrite)</label>
+                                    <input type="file" class="vault-input" name="image" accept="image/*">
+                                    <p class="text-muted small mt-2">Current imagery is preserved if no new file is
+                                        uploaded.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-vault"
+                            style="background: var(--border-color); color: var(--text-muted);"
+                            data-bs-dismiss="modal">Discard Changes</button>
+                        <button type="submit" class="btn-vault btn-vault-gold">Synchronize Asset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Footer -->
+    <footer class="content-wrapper py-4 mt-0 bg-transparent border-top border-secondary border-opacity-10">
+        <div class="d-flex justify-content-between align-items-center text-muted small">
+            <div>&copy; 2026 NanoRide Intelligence v2.1</div>
+            <div>Automotive Inventory & Fleet Management Hub</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+    <script>
+        let croppers = [];
+        const previewContainer = document.getElementById('previewContainer');
+        const imagesInput = document.getElementById('productImagesCreate');
+        const createForm = document.getElementById('createProductForm');
+
+        imagesInput.addEventListener('change', function (event) {
+            previewContainer.innerHTML = '';
+            croppers = [];
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                Array.from(files).forEach((file) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'cropper-container';
+                        const imgElement = document.createElement('img');
+                        imgElement.src = e.target.result;
+                        imgElement.style.maxWidth = '100%';
+                        previewDiv.appendChild(imgElement);
+                        previewContainer.appendChild(previewDiv);
+                        const cropper = new Cropper(imgElement, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                        });
+                        croppers.push(cropper);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        createForm.addEventListener('submit', function (event) {
+            const sizeCheckboxes = createForm.querySelectorAll('input[name="size"]');
+            let isChecked = false;
+            sizeCheckboxes.forEach(cb => { if (cb.checked) isChecked = true; });
+
+            if (!isChecked) {
+                event.preventDefault();
+                showSystemError("Logistics Constraint: At least one scale must be designated.");
+                return;
+            }
+
+            if (croppers.length > 0) {
+                event.preventDefault();
+                const croppedImagesData = [];
+                let processed = 0;
+
+                croppers.forEach((cropper) => {
+                    const canvas = cropper.getCroppedCanvas();
+                    if (canvas) {
+                        croppedImagesData.push(canvas.toDataURL());
+                    }
+                });
+
+                document.getElementById('croppedImages').value = JSON.stringify(croppedImagesData);
+                this.submit();
+            }
+        });
+
+        function showSystemError(msg) {
+            const toastHTML = `
+                <div class="toast show animate__animated animate__fadeInRight" role="alert" style="background: var(--bg-card); border-left: 4px solid var(--accent-red);">
+                    <div class="toast-header bg-transparent text-white border-0 py-3">
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                        <strong class="me-auto">Protocal Violation</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body text-white-50 pt-0">${msg}</div>
+                </div>`;
+            const container = document.getElementById("toastContainer");
+            container.innerHTML = toastHTML;
+            setTimeout(() => { container.innerHTML = ""; }, 4000);
+        }
+
+        function toggleStockField(checkbox) {
+            const stockField = document.getElementById(`stock_${checkbox.value}`);
+            if (checkbox.checked) {
+                stockField.disabled = false;
+                stockField.setAttribute('required', 'true');
+            } else {
+                stockField.disabled = true;
+                stockField.removeAttribute('required');
+                stockField.value = '';
+            }
+        }
+
+        function toggleStockFieldEdit(checkbox, productId) {
+            const stockField = document.getElementById(`edit_stock_${checkbox.value}_${productId}`);
+            if (checkbox.checked) {
+                stockField.disabled = false;
+                stockField.setAttribute('required', 'true');
+            } else {
+                stockField.disabled = true;
+                stockField.removeAttribute('required');
+                stockField.value = '';
+            }
+        }
+
+        // Live Character Count for Description
+        const descArea = document.querySelector('textarea[name="description"]');
+        const charCount = document.getElementById('charCount');
+        if (descArea) {
+            descArea.addEventListener('input', function () {
+                const len = this.value.length;
+                if (len < 1000) {
+                    charCount.innerHTML = `<i class="fas fa-times-circle text-danger me-1"></i> Deficit: ${1000 - len} characters remaining`;
+                    charCount.classList.add('text-danger');
+                } else {
+                    charCount.innerHTML = `<i class="fas fa-check-circle text-success me-1"></i> Optimal: Depth requirement reached (${len})`;
+                    charCount.className = 'text-success d-block mt-1';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

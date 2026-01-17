@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sales Report</title>
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f7fb;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .table-title {
+            font-size: 20px;
+            color: #34495e;
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ecf0f1;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover td {
+            background-color: #f1f1f1;
+        }
+
+        /* Total Section */
+        .totals {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            color: #2c3e50;
+        }
+
+        .totals p {
+            margin: 10px 0;
+        }
+
+        /* Footer Section */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Sales Report</h1>
+            <p>Generated on: {{ timestamp }}</p>
+        </div>
+
+        <div class="table-title">
+            <p>Sales Report for Orders</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Total Amount </th>
+                     <th>Payment Type</th>
+                    <th>Order Date</th>
+              
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>{{ order.total_price }}</td>
+                     <td>{{ order.payment_type }}</td>
+                    <td>{{ order.created_at|date:"Y-m-d H:i:s" }}</td>
+                  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="totals">
+            <p>Total Orders: <span>{{ orders.count }}</span></p>
+            <p>Total Sales Value: <span>{{ total_sales_value }}</span></p>
+            <p>Average Order Value: <span>{{ average_order_value }}</span></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+        <p>For any inquiries, please contact us at <a href="mailto:support@yourcompany.com">support@yourcompany.com</a></p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,808 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NANORIDE | Premium Miniature Car Collections</title>
+    <meta name="description"
+        content="Exclusive collection of premium miniature car models. Die-cast Mini Cooper, Mercedes-Benz, and rare collectibles for passionate automotive enthusiasts.">
+    <meta name="keywords"
+        content="miniature cars, die-cast models, collectible cars, Mini Cooper miniature, Mercedes-Benz scale models, 1:18 scale, 1:24 scale">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+
+    <style>
+        :root {
+            --primary-accent: #e63946;
+            /* Automotive Red */
+            --dark-charcoal: #121212;
+            --medium-charcoal: #1e1e1e;
+            --metallic-silver: #a8dadc;
+            --text-silver: #e0e1dd;
+            --gold-accent: #d4af37;
+            --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body {
+            background-color: var(--dark-charcoal);
+            color: var(--text-silver);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: rgba(18, 18, 18, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: var(--transition-smooth);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            color: white !important;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .navbar-brand span {
+            color: var(--primary-accent);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin: 0 15px;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-accent) !important;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: var(--primary-accent);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 90vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
+                url('https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?q=80&w=2080&auto=format&fit=crop') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--metallic-silver);
+            max-width: 600px;
+            margin-bottom: 35px;
+        }
+
+        .btn-premium {
+            padding: 12px 35px;
+            border-radius: 0;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 2px;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-solid {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+        }
+
+        .btn-solid:hover {
+            background-color: #c1121f;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-outline {
+            border: 1px solid white;
+            color: white;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: white;
+            color: black;
+        }
+
+        /* Section Styling */
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-accent);
+        }
+
+        /* Shop by Brand Cards */
+        .brand-card {
+            background-color: var(--medium-charcoal);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 20px;
+            text-align: center;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: 0.6s;
+        }
+
+        .brand-card:hover::before {
+            left: 100%;
+        }
+
+        .brand-card:hover {
+            background-color: #252525;
+            transform: translateY(-10px);
+            border-color: var(--primary-accent);
+        }
+
+        .brand-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-accent);
+        }
+
+        /* Product Cards */
+        .product-card {
+            background-color: var(--medium-charcoal);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .product-img-wrapper {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .product-card:hover .product-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .product-scale {
+            font-size: 0.8rem;
+            color: var(--metallic-silver);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+        }
+
+        .rating {
+            color: var(--gold-accent);
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+
+        /* Why Us Section */
+        .why-us-item {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .why-us-icon {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--primary-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+        }
+
+        /* Featured Banner */
+        .featured-banner {
+            background: linear-gradient(45deg, #000, #1a1a1a);
+            padding: 80px 0;
+            border-top: 1px solid var(--primary-accent);
+            border-bottom: 1px solid var(--primary-accent);
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: #0d0d0d;
+            padding: 80px 0;
+        }
+
+        .newsletter-form .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 0;
+        }
+
+        .newsletter-form .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary-accent);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #080808;
+            padding: 80px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-title {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 12px;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-link:hover {
+            color: var(--primary-accent);
+            padding-left: 5px;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            background-color: var(--medium-charcoal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: var(--transition-smooth);
+        }
+
+        .social-icons a:hover {
+            background-color: var(--primary-accent);
+            transform: translateY(-5px);
+        }
+
+        /* Toast Styling */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-padding {
+                padding: 60px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'products:home' %}">
+                NANO<span>RIDE</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'products:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products:products' %}">Collection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products:products' %}?q=Mercedes">Mercedes-Benz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products:products' %}?q=Mini">Mini Cooper</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cart:cart_view' %}" class="nav-link nav-icon me-3">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="badge-count">{{ cart_items_count }}</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                            data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-circle-user fa-lg me-2"></i>
+                            <span class="d-none d-md-inline">{{ user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            {% if user.is_superuser %}
+                            <li><a class="dropdown-item" href="{% url 'user_profile:users' %}">Dashboard</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'user_profile:profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'order:orders' %}">My Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user_profile:address' %}">Shipment Information</a></li>
+                            <li><a class="dropdown-item" href="{% url 'order:orders' %}">Track Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wallet:wallet' %}">wallet</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:wishlist' 'view' %}">Wishlist</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'authentication:custom_logout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'authentication:login' %}"
+                        class="btn btn-outline btn-premium py-2 px-4 fs-6">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <header class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 animate__animated animate__fadeInLeft">
+                    <h1 class="hero-title text-white">Premium <br> Miniature Car <br> Collections</h1>
+                    <p class="hero-subtitle">
+                        Experience precision in every detail. Discover our curated range of die-cast collectibles, scale
+                        models, and limited edition miniatures for the true automotive connoisseur.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'products:products' %}" class="btn btn-solid btn-premium">Shop Collection</a>
+                        <a href="#brands" class="btn btn-outline btn-premium d-none d-sm-inline-block">View Models</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section id="brands" class="section-padding">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="text-white">Shop By Manufacturer</h2>
+            </div>
+            <div class="row g-4">
+                {% if catogery %}
+                {% for cat in catogery %}
+                <div class="col-6 col-md-3 animate__animated animate__fadeInUp"
+                    style="animation-delay: {{ forloop.counter|add:0.1 }}s;">
+                    <a href="{% url 'products:brand_products' brand_name=cat.brand_name %}"
+                        class="text-decoration-none">
+                        <div class="brand-card">
+                            <div class="brand-icon">
+                                <i class="fa-solid fa-car-side"></i>
+                            </div>
+                            <h4 class="text-white mb-0">{{ cat.brand_name }}</h4>
+                            <p class="small text-muted mb-0 mt-2">View Models</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="col-6 col-md-3">
+                    <div class="brand-card">
+                        <div class="brand-icon"><i class="fa-solid fa-m"></i></div>
+                        <h4 class="text-white">Mercedes-Benz</h4>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="brand-card">
+                        <div class="brand-icon"><i class="fa-solid fa-c"></i></div>
+                        <h4 class="text-white">Mini Cooper</h4>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="brand-card">
+                        <div class="brand-icon"><i class="fa-solid fa-gem"></i></div>
+                        <h4 class="text-white">Classic Cars</h4>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="brand-card">
+                        <div class="brand-icon"><i class="fa-solid fa-star"></i></div>
+                        <h4 class="text-white">Limited Editions</h4>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <section class="section-padding bg-black bg-opacity-25 shadow-lg">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="text-white">Best Selling Miniatures</h2>
+            </div>
+            <div class="row mt-4">
+                {% for i in products %}
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <article class="product-card">
+                        <div class="product-img-wrapper">
+                            <a href="{% url 'products:products_detail' i.id %}">
+                                {% if i.additional_images.all %}
+                                <img src="{{ i.additional_images.first.image.url }}" alt="{{ i.name }}">
+                                {% else %}
+                                <img src="{% static 'images/default-product.jpg' %}" alt="{{ i.name }}">
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-scale">1:24 Scale Model</div>
+                            <a href="{% url 'products:products_detail' i.id %}" class="text-decoration-none">
+                                <h3 class="product-name">{{ i.name }}</h3>
+                            </a>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="ms-2 text-muted small">(4.8)</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="product-price">₹{{ i.price }}</span>
+                                <a href="{% url 'products:products_detail' i.id %}"
+                                    class="btn btn-solid btn-premium py-2 px-3 fs-6">
+                                    <i class="fa-solid fa-plus"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No premium miniatures available in this collection yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'products:products' %}" class="btn btn-outline btn-premium">View All Models</a>
+            </div>
+        </div>
+    </section>
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="text-white">Why Collect With NANORIDE</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 why-us-item">
+                    <div class="why-us-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h5 class="text-white">Authentic Detailing</h5>
+                    <p class="small text-muted">Meticulous precision in every curve and interior detail, mirroring
+                        real-world engineering.</p>
+                </div>
+                <div class="col-md-3 why-us-item">
+                    <div class="why-us-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h5 class="text-white">Premium Materials</h5>
+                    <p class="small text-muted">High-grade die-cast alloys and premium plastic parts ensuring
+                        long-lasting durability.</p>
+                </div>
+                <div class="col-md-3 why-us-item">
+                    <div class="why-us-icon"><i class="fa-solid fa-box-open"></i></div>
+                    <h5 class="text-white">Collector Packaging</h5>
+                    <p class="small text-muted">Luxury display boxes and acrylic cases designed to preserve and showcase
+                        your models.</p>
+                </div>
+                <div class="col-md-3 why-us-item">
+                    <div class="why-us-icon"><i class="fa-solid fa-earth-americas"></i></div>
+                    <h5 class="text-white">Global Delivery</h5>
+                    <p class="small text-muted">Secure, insured worldwide shipping with specialized protective handling
+                        for fragile models.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="featured-banner">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h2 class="text-white display-5 fw-bold mb-3">Limited Edition <br><span
+                            style="color: var(--gold-accent);">Silver Shadow Series</span></h2>
+                    <p class="text-silver mb-4">The ultimate collector's choice. Featuring hand-painted finishes and
+                        serial-numbered certificates of authenticity. Available for a limited time only.</p>
+                    <a href="{% url 'products:products' %}" class="btn btn-solid btn-premium">Explore The Series</a>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=2033&auto=format&fit=crop"
+                        alt="Premium Miniature" class="img-fluid rounded shadow-lg border border-secondary">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section-padding bg-black bg-opacity-50">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="text-white">Collector Testimonials</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="brand-card text-start p-4">
+                        <div class="rating mb-3">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="fst-italic text-silver">"The detail on the 1:18 Benz is astounding. It takes pride of
+                            place in my home office gallery."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="rounded-circle bg-secondary me-3" style="width: 40px; height: 40px;"></div>
+                            <div>
+                                <h6 class="text-white mb-0">David Richardson</h6>
+                                <small class="text-muted">Elite Collector</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="brand-card text-start p-4">
+                        <div class="rating mb-3">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="fst-italic text-silver">"Nanoride's packaging is superior to any other shop I've used.
+                            Arrived perfectly in London."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="rounded-circle bg-secondary me-3" style="width: 40px; height: 40px;"></div>
+                            <div>
+                                <h6 class="text-white mb-0">Sarah Jenkins</h6>
+                                <small class="text-muted">Verified Buyer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="brand-card text-start p-4">
+                        <div class="rating mb-3">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="far fa-star"></i>
+                        </div>
+                        <p class="fst-italic text-silver">"Fast shipping and great support. The Mini Cooper collection
+                            is a dream for enthusiasts."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="rounded-circle bg-secondary me-3" style="width: 40px; height: 40px;"></div>
+                            <div>
+                                <h6 class="text-white mb-0">Mark Thompson</h6>
+                                <small class="text-muted">Mini Enthusiast</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="newsletter-section text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <h2 class="text-white mb-3">Join The Collector's Club</h2>
+                    <p class="text-silver mb-4">Be the first to know about new arrivals, limited edition drops, and
+                        exclusive collector events.</p>
+                    <form class="newsletter-form d-flex gap-2">
+                        <input type="email" class="form-control" placeholder="Entyour email address" required>
+                        <button type="submit" class="btn btn-solid btn-premium px-4">Join</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <a class="navbar-brand mb-4 d-block" href="#">NANO<span>RIDE</span></a>
+                    <p class="text-muted pe-lg-5">
+                        Nanoride is the premier destination for serious miniature car collectors. We curate only the
+                        finest scale models that embody automotive excellence and precision craftsmanship.
+                    </p>
+                    <div class="social-icons mt-4">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <a href="{% url 'products:home' %}" class="footer-link">Home</a>
+                    <a href="{% url 'products:products' %}" class="footer-link">Shop All</a>
+                    <a href="#" class="footer-link">About Us</a>
+                    <a href="#" class="footer-link">New Arrivals</a>
+                </div>
+                <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                    <h5 class="footer-title">Customer Care</h5>
+                    <a href="{% url 'order:orders' %}" class="footer-link">Track Order</a>
+                    <a href="#" class="footer-link">Shipping Policy</a>
+                    <a href="#" class="footer-link">Return Policy</a>
+                    <a href="#" class="footer-link">FAQs</a>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="footer-title">Contact Details</h5>
+                    <p class="text-muted mb-2"><i class="fa-solid fa-location-dot me-2 text-silver"></i> Nanoride HQ,
+                        Automotive Hub, Kochi, India</p>
+                    <p class="text-muted mb-2"><i class="fa-solid fa-phone me-2 text-silver"></i> (+91) 987 654 3210</p>
+                    <p class="text-muted"><i class="fa-solid fa-envelope me-2 text-silver"></i> support@nanoride.com</p>
+                </div>
+            </div>
+            <div class="mt-5 pt-4 border-top border-secondary border-opacity-25 text-center">
+                <p class="small text-muted mb-0">© 2026 NANORIDE Collectors Club. All rights reserved. Designed for
+                    excellence.</p>
+                <div class="mt-3">
+                    <img src="{% static 'images/icons/icon-pay-01.png' %}" alt="Payments" class="mx-1"
+                        style="opacity: 0.6; height: 25px;">
+                    <img src="{% static 'images/icons/icon-pay-02.png' %}" alt="Payments" class="mx-1"
+                        style="opacity: 0.6; height: 25px;">
+                    <img src="{% static 'images/icons/icon-pay-03.png' %}" alt="Payments" class="mx-1"
+                        style="opacity: 0.6; height: 25px;">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="toast-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast show animate__animated animate__fadeInRight" role="alert" aria-live="assertive"
+            aria-atomic="true"
+            style="background-color: var(--medium-charcoal); color: white; border-right: 5px solid {% if message.tags == 'success' %}#2ecc71{% else %}#e74c3c{% endif %};">
+            <div class="toast-body d-flex justify-content-between align-items-center">
+                <div>
+                    <i
+                        class="{% if message.tags == 'success' %}fa-solid fa-circle-check text-success{% else %}fa-solid fa-circle-exclamation text-danger{% endif %} me-2"></i>
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                const bToast = new bootstrap.Toast(toast);
+                bToast.hide();
+            });
+        }, 4000);
+        window.addEventListener('scroll', function () {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.padding = '0.5rem 0';
+                navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.98) !important';
+            } else {
+                navbar.style.padding = '1rem 0';
+                navbar.style.backgroundColor = 'rgba(18, 18, 18, 0.95) !important';
+            }
+        });
+    </script>
+</body>
+</html>

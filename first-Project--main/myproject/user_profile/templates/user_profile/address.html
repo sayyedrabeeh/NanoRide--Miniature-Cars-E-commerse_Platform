@@ -1,0 +1,597 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Addresses | NanoRide Premium Collections</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+            <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+
+    <style>
+        :root {
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --accent-red: #e63946;
+            --accent-silver: #c0c0c0;
+            --accent-gold: #d4af37;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Navbar --- */
+        .navbar-custom {
+            background: rgba(8, 8, 8, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-brand span {
+            color: var(--accent-red);
+        }
+
+        /* --- Page Header --- */
+        .content-wrapper {
+            padding: 60px 0 100px;
+        }
+
+        .page-header {
+            margin-bottom: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .breadcrumb-nav {
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb-item a {
+            color: var(--accent-silver);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .title-group h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1.5px;
+        }
+
+        .title-group p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin: 5px 0 0;
+        }
+
+        /* --- Action Buttons --- */
+        .btn-vault {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .btn-vault:hover {
+            background: var(--text-main);
+            border-color: var(--text-main);
+            color: #000;
+        }
+
+        .btn-add {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .btn-add:hover {
+            background: #b91d2c;
+            border-color: #b91d2c;
+            color: #fff;
+        }
+
+        /* --- Summary Cards --- */
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            color: var(--accent-red);
+            font-size: 1.2rem;
+        }
+
+        .stat-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stat-count {
+            color: var(--accent-silver);
+            font-weight: 800;
+        }
+
+        /* --- Address Cards --- */
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .address-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .address-card:hover {
+            border-color: var(--accent-silver);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .address-type-badge {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-silver);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 1px solid var(--border-color);
+        }
+
+        .default-badge {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .address-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .address-details {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .address-phone {
+            margin-top: 15px;
+            font-weight: 600;
+            color: var(--accent-silver);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .address-actions {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action-small {
+            padding: 8px 15px;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* --- Info Section --- */
+        .info-panel {
+            background: rgba(230, 57, 70, 0.03);
+            border: 1px solid rgba(230, 57, 70, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+            margin-top: 60px;
+        }
+
+        .info-panel h4 {
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--accent-red);
+        }
+
+        .info-panel p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            max-width: 800px;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* --- Modals --- */
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 20px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 0 20px;
+        }
+
+        .modal-title {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.5;
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .vault-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .vault-input:focus {
+            border-color: var(--accent-red);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+        }
+
+        .form-text {
+            font-size: 0.7rem;
+            color: #555;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+        }
+
+        .empty-state h3 {
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
+
+            .address-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{% url 'products:home' %}" class="nav-brand">NANORIDE<span>.</span></a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{% url 'user_profile:profile' %}" class="btn-vault py-2"><i class="fas fa-user-circle"></i> My
+                    Profile</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="header-left">
+                    <nav class="breadcrumb-nav">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'user_profile:profile' %}">Profile</a></li>
+                            <li class="breadcrumb-item active">Addresses</li>
+                        </ol>
+                    </nav>
+                    <div class="title-group">
+                        <h1>Delivery Vault</h1>
+                        <p>Configure your secure shipping destinations for high-end automotive miniatures.</p>
+                    </div>
+                </div>
+                <button class="btn-vault btn-add" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                    <i class="fas fa-plus"></i> Add New Destination
+                </button>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <i class="fas fa-map-marker-alt stat-icon"></i>
+                    <span class="stat-text">Saved Locations: <span class="stat-count">{{ address|length }}</span></span>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shield-alt stat-icon"></i>
+                    <span class="stat-text">Secure Delivery Enabled</span>
+                </div>
+            </div>
+
+            <!-- Address Grid -->
+            <div class="address-grid">
+                {% for addr in address %}
+                <div class="address-card">
+                    <span class="address-type-badge">{{ addr.address_type|default:"Residential" }}</span>
+                    {% if forloop.first %}
+                    <span class="address-type-badge default-badge" style="top: 65px;">Primary Vault</span>
+                    {% endif %}
+
+                    <h3 class="address-name">{{ addr.user.get_full_name|default:request.user.username }}</h3>
+                    <div class="address-details">
+                        {{ addr.address_line1 }}<br>
+                        {% if addr.address_line2 %}{{ addr.address_line2 }}<br>{% endif %}
+                        {{ addr.city }}, {{ addr.state }} - <strong>{{ addr.postal_code }}</strong><br>
+                        {{ addr.country }}
+                    </div>
+                    <div class="address-phone">
+                        <i class="fas fa-phone-alt"></i> {{ addr.phone_number }}
+                    </div>
+
+                    <div class="address-actions">
+                        <button class="btn-vault btn-action-small" data-bs-toggle="modal"
+                            data-bs-target="#editModal{{addr.id}}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <form method="POST" action="{% url 'user_profile:listaddress' addr.id %}" class="flex-grow-1">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="btn-vault btn-action-small w-100 text-danger border-danger border-opacity-25">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="fas fa-map-marked-alt"></i></div>
+                        <h3>No Locations Defined</h3>
+                        <p class="text-muted mb-4">Your delivery repository is currently empty. Add a secure destination
+                            to begin your collection acquisition.</p>
+                        <button class="btn-vault btn-add" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            <i class="fas fa-plus"></i> Initialize First Address
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Delivery Info -->
+            <div class="info-panel">
+                <h4><i class="fas fa-truck-fast me-2"></i> Specialized Logistics</h4>
+                <p>All addresses in your vault are verified for compatibility with our Specialized Collector Logistics.
+                    We use climate-controlled transit and dual-layer protective shielding for every miniature car model,
+                    ensuring your investment arrives in showroom condition.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Address Modal -->
+    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Destination Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'user_profile:address' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Street Address (Vault Line 1)</label>
+                                <input type="text" class="form-control vault-input" name="address_line1" required
+                                    placeholder="e.g. 742 Evergreen Terrace">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control vault-input" name="city" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">State / Province</label>
+                                <input type="text" class="form-control vault-input" name="state" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">PIN / Postal Code</label>
+                                <input type="text" class="form-control vault-input" name="postal_code" required
+                                    pattern="\d{5,10}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Country</label>
+                                <select class="form-select vault-input" name="country" required>
+                                    <option value="IN">India</option>
+                                    <option value="US">United States</option>
+                                    <option value="GB">United Kingdom</option>
+                                    <option value="DE">Germany</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Contact Number (Collector Direct)</label>
+                                <input type="tel" class="form-control vault-input" name="phone_number" required
+                                    pattern="\d{10}">
+                                <div class="form-text">Required for delivery coordination and secure handling.</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2">
+                            <button type="submit" class="btn-vault btn-add w-100">Secure Destination</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for addr in address %}
+    <!-- Edit Address Modal -->
+    <div class="modal fade" id="editModal{{addr.id}}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Vault Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'user_profile:editaddress' addr.id %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Street Address</label>
+                                <input type="text" class="form-control vault-input" name="address_line1"
+                                    value="{{ addr.address_line1 }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control vault-input" name="city" value="{{ addr.city }}"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-control vault-input" name="state"
+                                    value="{{ addr.state }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Postal Code</label>
+                                <input type="text" class="form-control vault-input" name="postal_code"
+                                    value="{{ addr.postal_code }}" required pattern="\d{5,10}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Country</label>
+                                <select class="form-select vault-input" name="country" required>
+                                    <option value="IN" {% if addr.country == 'IN' or addr.country == 'India' %}selected{%endif %}>India</option>
+                                    <option value="US" {% if addr.country == 'US' or addr.country == 'United States'%}selected{% endif %}>United States</option>
+                                    <option value="GB" {% if addr.country == 'GB' or addr.country == 'United Kingdom'%}selected{% endif %}>United Kingdom</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control vault-input" name="phone_number"
+                                    value="{{ addr.phone_number }}" required pattern="\d{10}">
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2">
+                            <button type="submit" class="btn-vault btn-add w-100">Update Destination</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Footer -->
+    <footer class="border-top border-secondary border-opacity-10 py-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p class="text-muted small mb-0">&copy; 2026 NanoRide Miniature Collectibles. High-Security Logistics
+                Protocol.</p>
+            <div class="d-flex gap-4 mt-3 mt-md-0">
+                <a href="#" class="text-muted small text-decoration-none">Shipping Policy</a>
+                <a href="#" class="text-muted small text-decoration-none">Privacy Guard</a>
+                <a href="#" class="text-muted small text-decoration-none">Terms of Acquisition</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

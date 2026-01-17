@@ -1,0 +1,549 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed | Nanoride Collector Vault</title>
+    <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Frameworks & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-dark: #161616;
+            --accent-gold: #d4af37;
+            --accent-silver: #e5e5e5;
+            --accent-green: #2ecc71;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #2a2a2a;
+            --input-bg: #1f1f1f;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* --- Header Section --- */
+        .success-header {
+            padding: 5rem 0 3rem;
+            text-align: center;
+        }
+
+        .success-icon-wrapper {
+            width: 100px;
+            height: 100px;
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            position: relative;
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.2);
+        }
+
+        .success-icon-wrapper i {
+            font-size: 3rem;
+            color: var(--accent-green);
+        }
+
+        .order-id-badge {
+            background: var(--card-dark);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .order-id-badge:hover {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* --- Dashboard Cards --- */
+        .premium-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            height: 100%;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-item span {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* --- Items Table --- */
+        .items-list {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .item-thumb {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex-grow: 1;
+            padding-left: 1.5rem;
+        }
+
+        .item-info h6 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .item-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .item-price {
+            text-align: right;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* --- Summary Breakdown --- */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .summary-row.total {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        /* --- Buttons --- */
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .premium-btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.4s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .btn-gold {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-outline-premium {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-outline-premium:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* --- Assurance Section --- */
+        .assurance-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .assurance-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .assurance-card i {
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* --- Showcase --- */
+        .showcase-scroll {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-gold) transparent;
+        }
+
+        .showcase-card {
+            min-width: 280px;
+            background: var(--card-dark);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .assurance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+
+        <!-- Success Header -->
+        <section class="success-header animate-fade-in">
+            {% if cancel %}
+            <div class="success-icon-wrapper animate-scale-in"
+                style="border-color: #e63946; background: rgba(230, 57, 70, 0.1);">
+                <i class="fas fa-times" style="color: #e63946;"></i>
+            </div>
+            <h1 class="display-4 fw-800 mb-2">Payment Cancelled</h1>
+            <p class="text-secondary fs-5">Your order has not been placed. Need help with your selection?</p>
+            {% else %}
+            <div class="success-icon-wrapper animate-scale-in">
+                <i class="fas fa-check"></i>
+            </div>
+            <h1 class="display-4 fw-800 mb-2">Order Confirmed!</h1>
+            <p class="text-secondary fs-5">Your miniature collectible is being prepared for the vault.</p>
+
+            <div class="order-id-badge" onclick="copyToClipboard('{{ order.tracking_number|default:order_id }}')">
+                <span class="text-secondary small">TRACKING ID:</span>
+                <span class="fw-bold text-white">{{ order.tracking_number|default:order_id }}</span>
+                <i class="far fa-copy ms-2 text-gold"></i>
+            </div>
+            {% endif %}
+        </section>
+
+        <div class="row g-4 mt-4">
+            <!-- Order Details -->
+            <div class="col-lg-8">
+                <div class="premium-card animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="section-title">
+                        <i class="fas fa-file-invoice"></i> Order Summary
+                    </div>
+
+                    <div class="info-grid mb-5">
+                        <div class="info-item">
+                            <label>Order Date</label>
+                            <span>{{ order.created_at|date:"F j, Y" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Payment Method</label>
+                            <span>{{ order.get_payment_type_display|default:order.payment_type }}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Payment Status</label>
+                            <span class="text-green">
+                                {% if order.payment_status == 'Success' %}
+                                <i class="fas fa-check-circle me-1"></i> Paid
+                                {% else %}
+                                <i class="fas fa-clock me-1"></i> {{ order.payment_status }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <label>Delivery Status</label>
+                            <span class="text-gold">{{ order.items.first.status|default:"Processing" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        <i class="fas fa-box-open"></i> Purchased Collectibles
+                    </div>
+
+                    <div class="items-list">
+                        {% for item in order.items.all %}
+                        <div class="item-row">
+                            <div class="item-thumb">
+                                <img src="{% if item.product.additional_images.first %}{{ item.product.additional_images.first.image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                                    alt="{{ item.product.name }}">
+                            </div>
+                            <div class="item-info">
+                                <h6>{{ item.product.name }}</h6>
+                                <p>Scale {{ item.size.name|default:"Not specified" }} | Quantity: {{
+                                    item.quantity|floatformat:0 }}</p>
+                            </div>
+                            <div class="item-price">
+                                ₹{{ item.subtotal_price }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="assurance-grid">
+                        <div class="assurance-card">
+                            <i class="fas fa-shield-halved"></i>
+                            <h6 class="fw-bold small">Secure Vault Packaging</h6>
+                        </div>
+                        <div class="assurance-card">
+                            <i class="fas fa-certificate"></i>
+                            <h6 class="fw-bold small">Authentic Licensed Model</h6>
+                        </div>
+                        <div class="assurance-card">
+                            <i class="fas fa-truck-fast"></i>
+                            <h6 class="fw-bold small">Global Shipping Tracked</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price & Delivery -->
+            <div class="col-lg-4">
+                <!-- Totals -->
+                <div class="premium-card animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="section-title">
+                        <i class="fas fa-receipt"></i> Collector Breakdown
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Showroom Subtotal</span>
+                        <span>₹{{ subtotal }}</span>
+                    </div>
+                    {% if discount > 0 %}
+                    <div class="summary-row">
+                        <span>Member Discount</span>
+                        <span class="text-green">-₹{{ discount }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="summary-row">
+                        <span>Vault Shipping</span>
+                        <span class="text-green">COMPLIMENTARY</span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Paid Total</span>
+                        <span class="text-gold">₹{{ order.total_price }}</span>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'order:orders' %}" class="premium-btn btn-gold w-100">
+                            <i class="fas fa-location-dot"></i> Track Your Order
+                        </a>
+                        <div class="cta-group mt-3">
+                            <button class="premium-btn btn-outline-premium">
+                                <i class="fas fa-file-pdf"></i> Invoice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="premium-card animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="section-title">
+                        <i class="fas fa-map-pin"></i> Delivery Showroom
+                    </div>
+                    <div class="address-details">
+                        <h6 class="fw-bold mb-1">{{ order.user.username }}</h6>
+                        <p class="text-secondary small mb-3">
+                            {{ order.shipping_address.address_line1 }}<br>
+                            {{ order.shipping_address.city }}, {{ order.shipping_address.state }} - {{ order.shipping_address.postal_code }}
+                        </p>
+                        <div class="d-flex align-items-center gap-2 text-gold small">
+                            <i class="fas fa-phone"></i> {{ order.shipping_address.phone_number }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <section class="mt-5 pt-5 animate-fade-in" style="animation-delay: 0.5s;">
+            <div class="section-title">
+                <i class="fas fa-star"></i> Other Collector Favorites
+            </div>
+            <div class="showcase-scroll">
+                {% for recommended in recommended_products %}
+                <div class="showcase-card"
+                    onclick="window.location='{% url 'products:products_detail' recommended.id %}';"
+                    style="cursor: pointer;">
+                    <div class="ratio ratio-4x3 bg-dark">
+                        <img src="{% if recommended.additional_images.first %}{{ recommended.additional_images.first.image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                            class="object-fit-cover" alt="{{ recommended.name }}">
+                    </div>
+                    <div class="p-3">
+                        <h6 class="fw-bold mb-1">{{ recommended.name|truncatechars:25 }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-secondary small">Scale {{ recommended.size.first.name|default:"1:18" }}</span>
+                            <span class="text-gold fw-bold">₹{{ recommended.price }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted small">Exploring new rare additions for you...</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Help Section -->
+        <footer class="mt-5 pt-5 text-center pb-5">
+            <div class="py-4 border-top border-secondary opacity-50">
+                <p class="small mb-2">Need help with your collector purchase?</p>
+                <div class="d-flex justify-content-center gap-4">
+                    <a href="#" class="text-white text-decoration-none small hover-gold">Contact Support</a>
+                    <a href="#" class="text-white text-decoration-none small hover-gold">View FAQs</a>
+                    <a href="{% url 'products:home' %}" class="text-gold text-decoration-none small fw-bold">Continue
+                        Shopping</a>
+                </div>
+            </div>
+            <p class="x-small text-secondary">&copy; 2026 Nanoride Miniature Cars. Official Licensed Collectibles.</p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const badge = document.querySelector('.order-id-badge');
+                const originalContent = badge.innerHTML;
+                badge.innerHTML = '<span class="text-green small">COPIED TO CLIPBOARD!</span>';
+                setTimeout(() => { badge.innerHTML = originalContent; }, 2000);
+            });
+        }
+    </script>
+</body>
+
+</html>

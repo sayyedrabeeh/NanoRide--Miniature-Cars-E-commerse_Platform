@@ -1,0 +1,15 @@
+# Ignore environment variables
+.env
+
+myproject/passwords.txt
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore SQLite database file
+db.sqlite3
+
+# Ignore other files that shouldn't be tracked
+*.log
+*.pot

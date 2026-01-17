@@ -1,0 +1,917 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ brand_name }} | Premium Miniature Collections | NanoRide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+            <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --accent-silver: #c0c0c0;
+            --accent-red: #d90429;
+            --text-main: #ffffff;
+            --text-muted: #999999;
+            --border-color: #262626;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-red);
+        }
+
+        /* --- Navbar (Transparent to Solid) --- */
+        .navbar-custom {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--text-main) !important;
+        }
+
+        .navbar-brand span {
+            color: var(--accent-red);
+        }
+
+        /* --- Brand Hero Section --- */
+        .brand-hero {
+            position: relative;
+            height: 450px;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(10, 10, 10, 1)), url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding-top: 60px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .brand-badge {
+            background: var(--accent-red);
+            padding: 5px 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .hero-content p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* --- Breadcrumbs --- */
+        .breadcrumb-nav {
+            padding: 20px 0;
+            font-size: 0.85rem;
+        }
+
+        .breadcrumb-item a {
+            color: var(--accent-silver);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--accent-red);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-muted);
+        }
+
+        /* --- Filter Bar --- */
+        .filter-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .vault-select {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .vault-select:focus {
+            border-color: var(--accent-red);
+            outline: none;
+        }
+
+        /* --- Product Grid --- */
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(217, 4, 41, 0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+            padding: 20px;
+        }
+
+        .product-card:hover .card-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .scale-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--border-color);
+            color: var(--accent-silver);
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 2;
+        }
+
+        .wishlist-btn:hover {
+            background: var(--accent-red);
+            color: #fff;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-cat {
+            font-size: 0.75rem;
+            color: var(--accent-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .product-name:hover {
+            color: var(--accent-red);
+        }
+
+        .rating {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .rating i {
+            color: #f1c40f;
+        }
+
+        .price-row {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stock-status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .in-stock {
+            color: var(--accent-green);
+        }
+
+        .out-stock {
+            color: var(--accent-red);
+        }
+
+        .card-footer {
+            background: transparent;
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+        }
+
+        .btn-action {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-action:hover {
+            background: var(--text-main);
+            color: #000;
+            border-color: var(--text-main);
+        }
+
+        /* --- Sidebar Filters (Mobile) --- */
+        .sidebar-filter {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .filter-title {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-red);
+            display: inline-block;
+        }
+
+        .filter-subtitle {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .filter-checkbox {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .filter-checkbox input {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-right: 12px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .filter-checkbox input:checked+.checkbox-custom {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .filter-checkbox input:checked+.checkbox-custom::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 10px;
+            color: #fff;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .filter-checkbox:hover .checkbox-label {
+            color: #fff;
+        }
+
+        /* --- Featured Banner --- */
+        .featured-banner {
+            background: linear-gradient(90deg, #111, #000), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop') center/cover;
+            border-radius: 20px;
+            padding: 80px 60px;
+            margin: 60px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .featured-text h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .featured-text p {
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        /* --- Trust Badges --- */
+        .trust-section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .trust-card {
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 2.5rem;
+            color: var(--accent-silver);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .trust-card:hover .trust-icon {
+            color: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .trust-card h5 {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .trust-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #050505;
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo span {
+            color: var(--accent-red);
+        }
+
+        .footer-links h6 {
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-red);
+            padding-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .social-btn:hover {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            transform: translateY(-5px);
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 991px) {
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .brand-hero {
+                height: 350px;
+            }
+
+            .sidebar-filter {
+                position: relative;
+                top: 0;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .featured-banner {
+                padding: 40px 30px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{% url 'products:home' %}" class="navbar-brand">NANORIDE<span></span></a>
+            <div class="d-flex align-items-center gap-3">
+            </div>
+        </div>
+    </nav>
+    <header class="brand-hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="brand-badge">Premium Collection</span>
+                <h1>{{ brand_name|default:"Supercar Legends" }}</h1>
+                <p>Meticulously engineered miniature masterpieces. Experience the legacy of
+                    {{brand_name|default:"automotive excellence" }} through our collector-grade die-cast and scale
+                    models.
+                </p>
+            </div>
+        </div>
+    </header>
+    <div class="container mt-4">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Brands</a></li>
+                <li class="breadcrumb-item active">{{ brand_name }}</li>
+            </ol>
+        </nav>
+
+        <form method="GET" action="{% url 'products:brand_products' brand_name %}" id="filterForm">
+            <div class="row">
+                <aside class="col-lg-3">
+                    <div class="sidebar-filter">
+                        <div class="mb-4">
+                            <span class="filter-title">Refine Series</span>
+                        </div>
+                        <div class="mb-4">
+                            <span class="filter-subtitle">Scale Ratio</span>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" checked>
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">1:18 Masterpiece</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">1:24 Executive</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">1:43 Compact</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">1:64 Pocket Series</span>
+                            </label>
+                        </div>
+                        <div class="mb-4">
+                            <span class="filter-subtitle">Collection Type</span>
+                            {% for type in available_types %}
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="type" value="{{ type.id }}" {% if type.id in selected_types%}checked{% endif %} onchange="this.form.submit()">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">{{ type.category }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-4">
+                            <span class="filter-subtitle">Vault Value (Max)</span>
+                            <input type="range" class="form-range custom-range" name="max_price" min="500" max="50000"
+                                step="500" value="{{ max_price|default:50000 }}" onchange="this.form.submit()">
+                            <div class="d-flex justify-content-between text-muted small mt-2">
+                                <span>₹500</span>
+                                <span id="priceValue">₹{{ max_price|default:50000 }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'products:brand_products' brand_name %}"
+                            class="btn-action mt-3 text-decoration-none">Reset All Filters</a>
+                    </div>
+                </aside>
+                <main class="col-lg-9">
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <span class="filter-label">Sort By:</span>
+                            <select name="sort" class="vault-select" onchange="this.form.submit()">
+                                <option value="popularity" {% if sort_by == 'popularity' %}selected{% endif %}>Popularity
+                                </option>
+                                <option value="newness" {% if sort_by == 'newness' %}selected{% endif %}>New Arrivals
+                                </option>
+                                <option value="price_low_to_high" {% if sort_by == 'price_low_to_high' %}selected{%endif%}>Price: Low to High</option>
+                                <option value="price_high_to_low" {% if sort_by == 'price_high_to_low' %}selected{%endif%}>Price: High to Low</option>
+                                <option value="a_z" {% if sort_by == 'a_z' %}selected{% endif %}>A-Z</option>
+                            </select>
+                        </div>
+                        <div class="text-muted small">
+                            Showing <strong>{{ products.start_index }} - {{ products.end_index }}</strong> of
+                            <strong>{{products.paginator.count }}</strong> miniatures
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        {% for product in products %}
+                        <div class="col-md-6 col-xl-4">
+                            <div class="product-card">
+                                <div class="card-img-wrapper">
+                                    <span class="scale-badge">Collector Model</span>
+                                    {% if product.id in user_wishlist %}
+                                    <a href="{% url 'products:wishlist' 'remove' product.id %}"
+                                        class="wishlist-btn text-danger"><i class="fas fa-heart"></i></a>
+                                    {% else %}
+                                    <a href="{% url 'products:wishlist' 'add' product.id %}" class="wishlist-btn"><i
+                                            class="far fa-heart"></i></a>
+                                    {% endif %}
+                                    {% if product.additional_images.first %}
+                                    <img src="{{ product.additional_images.first.image.url }}" alt="{{ product.name }}">
+                                    {% else %}
+                                    <img src="{% static 'images/placeholder.jpg' %}" alt="No Image">
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <span class="product-cat">{{ product.type|default:"Die-cast" }}</span>
+                                    <a href="{% url 'products:products_detail' product.id %}"
+                                        class="product-name">{{product.name }}</a>
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                        <span class="ms-2 text-muted">(42 Reviews)</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span class="price">₹{{ product.price }}</span>
+                                        <span class="stock-status in-stock">
+                                            <i class="fas fa-check-circle me-1"></i>In Vault
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <form method="POST" action="{% url 'cart:cart_view' 'add' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <button type="submit" class="btn-action">
+                                            <i class="fas fa-shopping-cart"></i> Add to Collection
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 py-5 text-center">
+                            <i class="fas fa-car-side fa-4x opacity-10 mb-4"></i>
+                            <h4 class="fw-bold">No miniatures in this brand vault yet.</h4>
+                            <p class="text-muted">Check back soon for new arrivals from {{ brand_name }}.</p>
+                            <a href="{% url 'products:home' %}"
+                                class="btn-action d-inline-flex w-auto px-5 mt-3">Explore
+                                Storefront</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="featured-banner">
+                        <div class="featured-text">
+                            <span class="brand-badge">Rare Find</span>
+                            <h2>Limited Anniversary Series</h2>
+                            <p>Explore exclusive, numbered editions of {{ brand_name }} models. Featuring real leather
+                                interiors and metallic paint finishes.</p>
+                            <a href="#" class="btn-action d-inline-flex w-auto px-4 btn-gold">Explore Rare Editions</a>
+                        </div>
+                    </div>
+
+                    {% if products.has_other_pages %}
+                    <nav class="mt-5 pb-5">
+                        <ul class="pagination justify-content-center">
+                            {% if products.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link bg-dark border-secondary text-white px-4"
+                                    href="?page={{ products.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Prev</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled"><span
+                                    class="page-link bg-dark border-secondary text-muted px-4">Prev</span></li>
+                            {% endif %}
+
+                            {% for i in products.paginator.page_range %}
+                            {% if products.number == i %}
+                            <li class="page-item active"><span class="page-link bg-danger border-danger px-4">{{
+                                    i}}</span></li>
+                            {% elif i > products.number|add:'-3' and i < products.number|add:'3' %} <li
+                                class="page-item">
+                                <a class="page-link bg-dark border-secondary text-white px-4"
+                                    href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{i
+                                    }}</a>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if products.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link bg-dark border-secondary text-white px-4"
+                                        href="?page={{ products.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled"><span
+                                        class="page-link bg-dark border-secondary text-muted px-4">Next</span></li>
+                                {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </main>
+            </div>
+        </form>
+    </div>
+
+    <section class="trust-section">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-3">
+                    <div class="trust-card">
+                        <div class="trust-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h5>100% AUTHENTIC</h5>
+                        <p>Licensed models from official manufacturers.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="trust-card">
+                        <div class="trust-icon"><i class="fas fa-box"></i></div>
+                        <h5>SECURE TRANSIT</h5>
+                        <p>Specialized packaging for fragile collectibles.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="trust-card">
+                        <div class="trust-icon"><i class="fas fa-globe-americas"></i></div>
+                        <h5>GLOBAL SHIPPING</h5>
+                        <p>Reaching collectors in over 50 countries.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="trust-card">
+                        <div class="trust-icon"><i class="fas fa-headset"></i></div>
+                        <h5>EXPERT SUPPORT</h5>
+                        <p>Collector-to-collector customer care.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" style="background: #111;">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h3 class="fw-800 mb-2">JOIN THE INNER CIRCLE</h3>
+                    <p class="text-muted mb-0">Get exclusive updates on new <strong>{{ brand_name }}</strong> arrivals
+                        and private sales.</p>
+                </div>
+                <div class="col-lg-6">
+                    <form class="d-flex gap-2">
+                        <input type="email" class="vault-input flex-grow-1" placeholder="Enter your email address...">
+                        <button class="btn-action w-auto px-4 btn-gold" style="border-radius: 8px;">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="footer-logo">NANORIDE<span>.</span></div>
+                    <p class="text-muted small pe-lg-5">Curating the world's finest automotive miniatures for the modern
+                        collector. Every model tells a story of craftsmanship and speed.</p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="footer-links">
+                        <h6>THE REPOSITORY</h6>
+                        <ul>
+                            <li><a href="#">All Brands</a></li>
+                            <li><a href="#">Limited Editions</a></li>
+                            <li><a href="#">New Arrivals</a></li>
+                            <li><a href="#">Scale Guide</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="footer-links">
+                        <h6>THE VAULT</h6>
+                        <ul>
+                            <li><a href="#">My Collection</a></li>
+                            <li><a href="#">Order History</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                            <li><a href="#">Pre-orders</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="footer-links">
+                        <h6>COLLECTOR SUPPORT</h6>
+                        <ul>
+                            <li><a href="#">Authenticity Guarantee</a></li>
+                            <li><a href="#">Shipping Policy</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5 pt-4 border-top border-secondary border-opacity-10 align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="text-muted small mb-0">&copy; 2026 NanoRide Miniature Collectibles. High-End Directives
+                        Secure.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="https://images.squarespace-cdn.com/content/v1/5938497d440243be4449f87b/1500305891392-T53M309FMP2G6D2WOC8U/payment-icons.png?format=1000w"
+                        alt="Payment Methods"
+                        style="height: 25px; filter: grayscale(1) invert(1) brightness(2); opacity: 0.5;">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

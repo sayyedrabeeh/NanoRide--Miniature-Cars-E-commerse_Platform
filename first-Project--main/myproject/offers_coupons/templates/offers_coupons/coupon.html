@@ -1,0 +1,1005 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupons & Promotions | NanoRide Admin Vault</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+            <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+
+    <style>
+        :root {
+            --bg-dark: #080808;
+            --bg-sidebar: #0f0f0f;
+            --bg-card: #161616;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --accent-green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            padding: 0 30px 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-brand span {
+            color: var(--accent-gold);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .nav-item.active i {
+            color: #000;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 80px;
+            background: rgba(8, 8, 8, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 280px;
+            z-index: 999;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-icon {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .action-icon:hover {
+            color: var(--accent-gold);
+        }
+
+        .badge-pulse {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .admin-profile:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .admin-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .content-wrapper {
+            margin-left: 280px;
+            padding: 120px 40px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+        }
+
+        .stats-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stats-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Controls & Filters --- */
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box-mini {
+            position: relative;
+            flex-grow: 1;
+            min-width: 300px;
+        }
+
+        .search-box-mini i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box-mini input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .search-box-mini input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .vault-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .vault-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        /* --- Coupons Table --- */
+        .card-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .vault-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .vault-table th {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .vault-table td {
+            background: var(--bg-dark);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .vault-table tr td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .vault-table tr td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .promo-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 800;
+            color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px dashed rgba(212, 175, 55, 0.3);
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .badge-inactive {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .badge-scheduled {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .btn-vault {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-vault:hover {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-vault-gold {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-vault-gold:hover {
+            background: #b8962d;
+            border-color: #b8962d;
+            color: #000;
+        }
+
+        .btn-vault-outline-info {
+            color: #3498db;
+            border-color: rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-vault-outline-info:hover {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-vault-outline-warning {
+            color: var(--accent-gold);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-vault-outline-warning:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        /* --- Modal Styles --- */
+        .modal-vault .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 15px;
+        }
+
+        .modal-vault .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 25px 30px;
+        }
+
+        .modal-vault .modal-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-vault .modal-title i {
+            color: var(--accent-gold);
+        }
+
+        .modal-vault .modal-body {
+            padding: 30px;
+        }
+
+        .modal-vault .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 30px;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .vault-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .vault-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: #000;
+        }
+
+        .vault-input::placeholder {
+            color: #444;
+        }
+
+        /* --- Pagination --- */
+        .pagination-vault .page-link {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .pagination-vault .page-link:hover {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+            z-index: 1;
+        }
+
+        .pagination-vault .page-item.active .page-link {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+            }
+        }
+
+        /* Notifications */
+        .alert {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            padding: 15px 25px;
+            color: #fff;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .alert-error,
+        .alert-danger {
+            background: rgba(230, 57, 70, 0.1);
+            border-left: 4px solid var(--accent-red);
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand span,
+            .nav-item span {
+                display: none;
+            }
+
+            .sidebar-brand {
+                padding: 0 20px 40px;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .top-bar {
+                left: 80px;
+            }
+
+            .content-wrapper {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-car-side"></i>
+            <span>NANORIDE<span>.</span></span>
+        </div>
+          <nav class="nav-menu">
+            <a href="{% url 'products:home' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Storefront</span>
+            </a>
+            <a href="{% url 'reports:admin_dashboard' %}" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'order:order_admin' %}" class="nav-item ">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="{% url 'products:products_admin' %}" class="nav-item">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a>
+            <a href="{% url 'products:catogery' %}" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="{% url 'products:Type' %}" class="nav-item">
+                <i class="fas fa-layer-group"></i>
+                <span>Types</span>
+            </a>
+            <a href="{% url 'offers_coupons:coupon' %}" class="nav-item active">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Coupons</span>
+            </a>
+
+            <a href="{% url 'reports:sales_report' %}" class="nav-item  ">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Sales Reports</span>
+            </a>
+            <a href="{% url 'user_profile:users' %}" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto">
+            <a href="/logout/" class="nav-item text-danger border border-danger border-opacity-25">
+                <i class="fas fa-power-off"></i>
+                <span>Security Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Search promo codes, campaigns or active protocols...">
+        </div>
+
+        <div class="admin-actions">
+            <div class="action-icon">
+                <i class="far fa-bell"></i>
+                <div class="badge-pulse"></div>
+            </div>
+            <div class="admin-profile">
+                <img src="{% static 'images/3.jpeg' %}" alt="Admin" class="admin-avatar">
+                <span class="admin-name">{{ user.username|default:"System Admin" }}</span>
+                <i class="fas fa-chevron-down small text-muted"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <div class="page-header">
+            <div>
+                <h2>Coupons & Promotions Cache</h2>
+                <p>Strategizing acquisition incentives for elite scale model collectors.</p>
+            </div>
+            <button class="btn-vault btn-vault-gold" data-bs-toggle="modal" data-bs-target="#createModal">
+                <i class="fas fa-plus"></i>
+                <span>Forge New Incentive</span>
+            </button>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i
+                    class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="stats-icon"><i class="fas fa-ticket-alt"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{{ coupons|length|default:"0" }}</span>
+                    <span class="stats-label">Total Promos</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-success"><i class="fas fa-bolt"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with active_count=0 %}{% for c in coupons %}{% if c.status == 'listed'%}{{ active_count|add:1 }}{% endif %}{% endfor %}{{ active_count|default:"Active" }}{% endwith%}</span>
+                    <span class="stats-label">Operational</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-warning"><i class="fas fa-users"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">{% with redeems=0 %}{% for c in coupons %}{% if c.used_count %}{{
+                        redeems|add:c.used_count }}{% endif %}{% endfor %}{{ redeems|default:"0" }}{% endwith %}</span>
+                    <span class="stats-label">Redemptions</span>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-info"><i class="fas fa-percentage"></i></div>
+                <div class="stats-info">
+                    <span class="stats-value">Elite</span>
+                    <span class="stats-label">Promo Tier</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters & Sort -->
+        <div class="controls-row">
+            <div class="search-box-mini">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Filter by unique code or incentive value...">
+            </div>
+
+            <div class="filter-group">
+                <select class="vault-select">
+                    <option>Status: Unified View</option>
+                    <option>Operational Only</option>
+                    <option>Decommissioned</option>
+                </select>
+                <select class="vault-select">
+                    <option>Sort: Chronological Order</option>
+                    <option>Highest Yield First</option>
+                    <option>Max Redemptions</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Promotions Registry Table -->
+        <div class="card-table">
+            <div class="table-responsive">
+                <table class="vault-table">
+                    <thead>
+                        <tr>
+                            <th>Protocol Code</th>
+                            <th>Incentive Payload</th>
+                            <th>Deployment Reach</th>
+                            <th>Utilization Metric</th>
+                            <th>Current State</th>
+                            <th class="text-end">Command Hub</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if coupons %}
+                        {% for i in coupons %}
+                        <tr>
+                            <td><span class="promo-code">{{ i.code }}</span></td>
+                            <td>
+                                <div class="fw-bold">₹{{ i.discount }} Flat Deduction</div>
+                                <div class="text-muted small">Standard Acquisition Credit</div>
+                            </td>
+                            <td>
+                                <div class="text-white small">Limit: {{ i.max_uses }} Redemptions</div>
+                                <div class="text-muted smaller">Global Deployment Protocol</div>
+                            </td>
+                            <td>
+                                <div class="progress bg-dark border border-secondary border-opacity-25"
+                                    style="height: 6px; width: 100px;">
+                                    <div class="progress-bar bg-gold" role="progressbar"
+                                        style="width: {% widthratio i.used_count i.max_uses 100 %}%; background: var(--accent-gold);">
+                                    </div>
+                                </div>
+                                <div class="text-muted small mt-1">{{ i.used_count }} / {{ i.max_uses }} Used</div>
+                            </td>
+                            <td>
+                                {% if i.status == 'listed' %}
+                                <span class="status-badge badge-active">Operational</span>
+                                {% else %}
+                                <span class="status-badge badge-inactive">Offline</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="btn-vault btn-vault-outline-info" data-bs-toggle="modal"
+                                        data-bs-target="#editModal{{ i.id }}" title="Recalibrate Protocol">
+                                        <i class="fas fa-sliders-h"></i>
+                                    </button>
+                                    <form method="POST" action="{% url 'offers_coupons:listcoupon' i.id %}"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-vault btn-vault-outline-warning"
+                                            title="{% if i.status == 'listed' %}Decommission{% else %}Commission{% endif %} Protocol">
+                                            <i
+                                                class="fas {% if i.status == 'listed' %}fa-power-off{% else %}fa-play{% endif %}"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="fas fa-ticket-alt text-muted mb-3 fs-1 opacity-25"></i>
+                                <p class="text-muted">No operational promotion protocols detected in the vault cache.
+                                </p>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Registry Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">Accessing promotion block 1 of 1</div>
+                <nav>
+                    <ul class="pagination pagination-vault mb-0">
+                        <li class="page-item disabled"><span class="page-link"><i class="fas fa-angle-left"></i></span>
+                        </li>
+                        <li class="page-item active"><span class="page-link">1</span></li>
+                        <li class="page-item disabled"><span class="page-link"><i class="fas fa-angle-right"></i></span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+
+    <!-- Forge New Protocol Modal -->
+    <div id="createModal" class="modal fade modal-vault" tabindex="-1" aria-labelledby="createModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel"><i class="fas fa-plus-circle"></i> Forge Promotion
+                        Protocol</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{% url 'offers_coupons:create_coupon' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label class="form-label">Protocol Designation (Code)</label>
+                            <input type="text" class="vault-input" name="code" placeholder="e.g. VANTAGE2026" required>
+                            <small class="text-muted mt-1 d-block">Unique identifier for collector checkout
+                                auth.</small>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Incentive Yield (₹ Value)</label>
+                            <input type="number" class="vault-input" name="discount" placeholder="Flat deduction amount"
+                                required>
+                            <small class="text-muted mt-1 d-block">Maximum allowable yield: ₹200.00</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-4">
+                                <label class="form-label">Deployment Cap</label>
+                                <input type="number" class="vault-input" name="max_uses" placeholder="100" value="100">
+                            </div>
+                            <div class="col-6 mb-4">
+                                <label class="form-label">Classification</label>
+                                <select class="vault-select w-100 py-2">
+                                    <option>Standard Flat Tier</option>
+                                    <option>Percentage Yield</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-vault"
+                            style="background: var(--border-color); color: var(--text-muted);"
+                            data-bs-dismiss="modal">Abort Forging</button>
+                        <button type="submit" class="btn-vault btn-vault-gold">Engage Protocol</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recalibrate Protocol Modals -->
+    {% for i in coupons %}
+    <div id="editModal{{ i.id }}" class="modal fade modal-vault" tabindex="-1"
+        aria-labelledby="editModalLabel{{ i.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel{{ i.id }}"><i class="fas fa-sliders-h"></i> Recalibrate
+                        Protocol: {{ i.code }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{% url 'offers_coupons:edit_coupon' i.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label class="form-label">Protocol Designation</label>
+                            <input type="text" class="vault-input" name="code" value="{{ i.code }}" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Incentive Yield (₹)</label>
+                            <input type="number" class="vault-input" name="discount" value="{{ i.discount }}" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-4">
+                                <label class="form-label">Deployment Cap</label>
+                                <input type="number" class="vault-input" name="max_uses"
+                                    value="{{ i.max_uses|default:100 }}">
+                            </div>
+                            <div class="col-6 mb-4">
+                                <label class="form-label">Utilization Progress</label>
+                                <div class="vault-input bg-dark border-0 text-muted">{{ i.used_count }} Redemptions
+                                    Logged</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-vault"
+                            style="background: var(--border-color); color: var(--text-muted);"
+                            data-bs-dismiss="modal">Discard Adjustments</button>
+                        <button type="submit" class="btn-vault btn-vault-gold">Synchronize Protocol</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Footer -->
+    <footer class="content-wrapper py-4 mt-0 bg-transparent border-top border-secondary border-opacity-10">
+        <div class="d-flex justify-content-between align-items-center text-muted small">
+            <div>&copy; 2026 NanoRide Intelligence v2.1</div>
+            <div>Promotion & Incentive Management Hub</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

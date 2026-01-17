@@ -1,0 +1,864 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Collector Cart | Premium Miniature Models | AutoGallery</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #262626;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Page Header --- */
+        .cart-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1542362567-b05503f3f5f4?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .cart-header p {
+            color: var(--accent-gold);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        /* --- Breadcrumb --- */
+        .breadcrumb-nav {
+            background: #000;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--accent-gold);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: var(--border-color);
+        }
+
+        /* --- Cart Table & Items --- */
+        .cart-container {
+            padding: 80px 0;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+
+        .cart-table thead th {
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 20px 10px;
+            font-weight: 600;
+        }
+
+        .cart-item-row {
+            background: var(--bg-card);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .cart-item-row:hover {
+            background: #1a1a1a;
+        }
+
+        .cart-item-row td {
+            padding: 25px 20px;
+            vertical-align: middle;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-row td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .cart-item-row td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .product-info-cell {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .product-thumb {
+            width: 120px;
+            height: 120px;
+            background: #000;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .product-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-meta h6 {
+            margin: 0 0 5px;
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .product-brand {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .badge-scale {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .price-cell {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .subtotal-cell {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+        }
+
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px;
+            width: fit-content;
+        }
+
+        .qty-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        .qty-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            width: 45px;
+            text-align: center;
+            font-weight: 600;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-remove {
+            background: transparent;
+            border: none;
+            color: #444;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .btn-remove:hover {
+            color: var(--accent-red);
+            transform: scale(1.2);
+        }
+
+        /* --- Summary Sidebar --- */
+        .cart-summary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            position: sticky;
+            top: 120px;
+        }
+
+        .summary-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .summary-row.total {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-top: 20px;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .btn-checkout {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            margin-bottom: 15px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-checkout:hover {
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-checkout.disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: #fff;
+        }
+
+        /* --- Indicators --- */
+        .limited-tag {
+            font-size: 0.65rem;
+            color: var(--accent-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .out-of-stock-badge {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: #fff;
+            border-radius: 8px;
+            text-transform: uppercase;
+            z-index: 2;
+            border: 1px solid var(--accent-red);
+        }
+
+        /* --- Coupons --- */
+        .coupons-section {
+            margin-top: 50px;
+        }
+
+        .coupons-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+
+        .coupon-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .coupon-card {
+            background: #000;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .coupon-card:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .coupon-code {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .coupon-discount {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* --- Mobile Layout --- */
+        @media (max-width: 991px) {
+            .cart-table thead {
+                display: none;
+            }
+
+            .cart-item-row {
+                display: block;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                margin-bottom: 20px;
+            }
+
+            .cart-item-row td {
+                display: block;
+                border: none !important;
+                width: 100% !important;
+                padding: 10px 20px;
+            }
+
+            .cart-item-row td:first-child {
+                padding-top: 20px;
+            }
+
+            .cart-item-row td:last-child {
+                padding-bottom: 20px;
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+            }
+
+            .product-info-cell {
+                align-items: flex-start;
+            }
+
+            .cart-summary {
+                margin-top: 40px;
+                position: static;
+            }
+        }
+
+        /* --- Trust Strip --- */
+        .trust-strip {
+            background: #000;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-item i {
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .trust-item h6 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* --- Newsletter --- */
+        .newsletter-section {
+            background: var(--bg-card);
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .newsletter-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .newsletter-sub {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            flex-grow: 1;
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 20px;
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter-btn {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 0 30px;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .newsletter-btn:hover {
+            background: #fff;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 60px 0 30px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        /* --- Empty Cart --- */
+        .empty-cart-state {
+            text-align: center;
+            padding: 120px 0;
+        }
+
+        .empty-cart-icon {
+            font-size: 6rem;
+            color: #222;
+            margin-bottom: 30px;
+        }
+
+        .empty-cart-state h2 {
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .empty-cart-state p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .btn-explore {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-explore:hover {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Page Header -->
+    <header class="cart-header">
+        <div class="container text-center">
+            <h1>Your Collector Cart</h1>
+            <p>Masterpieces waiting for their place in your showroom.</p>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Shopping Cart</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Cart Content -->
+    <main class="cart-container container">
+        {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+                    role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if cart_items %}
+        {% if out_of_stock_items %}
+        <div class="alert alert-danger mb-4 rounded-3 border-0 bg-danger text-white">
+            <i class="fas fa-exclamation-triangle me-2"></i> Some of your models are currently out of stock. Please
+            remove them to proceed.
+        </div>
+        {% endif %}
+
+        <div class="row g-5">
+            <!-- Left: Cart Items -->
+            <div class="col-lg-8">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in cart_items %}
+                        <tr class="cart-item-row">
+                            <td>
+                                <div class="product-info-cell">
+                                    <div class="product-thumb">
+                                        {% with i.product.additional_images.first as image %}
+                                        {% if image %}
+                                        <img src="{{ image.image.url }}" alt="{{ i.product.name }}">
+                                        {% else %}
+                                        <img src="{% static 'images/default.jpg' %}" alt="Placeholder">
+                                        {% endif %}
+                                        {% endwith %}
+
+                                        {% if i.quantity > i.stock %}
+                                        <div class="out-of-stock-badge">Sold Out</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-meta">
+                                        <span class="product-brand">{{ i.product.category.brand_name }}</span>
+                                        <h6>{{ i.product.name }}</h6>
+                                        <span class="badge-scale">{{ i.size.name }} Scale</span>
+                                        {% if i.product.offer > 0 %}
+                                        <span class="limited-tag"><i class="fas fa-certificate"></i> Exclusive
+                                            Offer</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="price-cell">₹{{ i.product.price }}</td>
+                            <td>
+                                <form action="{% url 'cart:cart_view' 'update_quantity' %}" method="post"
+                                    class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product_id" value="{{ i.product.id }}">
+                                    <input type="hidden" name="size_id" value="{{ i.size.id }}">
+                                    <div class="qty-selector">
+                                        <button type="button" class="qty-btn"
+                                            onclick="this.nextElementSibling.stepDown(); this.closest('form').submit();"><i
+                                                class="fas fa-minus"></i></button>
+                                        <input type="number" name="quantity" value="{{ i.quantity }}" min="1"
+                                            max="{{ i.stock }}" class="qty-input" onchange="this.form.submit()">
+                                        <button type="button" class="qty-btn"
+                                            onclick="this.previousElementSibling.stepUp(); this.closest('form').submit();"><i
+                                                class="fas fa-plus"></i></button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="subtotal-cell">₹{{ i.item_total }}</td>
+                            <td class="text-end">
+                                <form action="{% url 'cart:cart_view' 'remove' %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product_id" value="{{ i.product.id }}">
+                                    <input type="hidden" name="size_id" value="{{ i.size.id }}">
+                                    <button type="submit" class="btn-remove" title="Remove Item"><i
+                                            class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="coupons-section">
+                    <h4 class="coupons-title"><i class="fas fa-ticket-alt me-2"></i> Exclusive Rewards For You</h4>
+                    <div class="coupon-cards">
+                        {% for coupon in coupons %}
+                        <div class="coupon-card">
+                            <span class="coupon-code">{{ coupon.code }}</span>
+                            <div class="coupon-discount">₹{{ coupon.discount }} OFF</div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted small italic">No active coupons available at the moment.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <a href="{% url 'products:products' %}" class="back-link d-inline-block"><i
+                            class="fas fa-arrow-left me-2"></i> Continue Building Your Collection</a>
+                </div>
+            </div>
+
+            <!-- Right: Summary -->
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h5 class="summary-title">Showroom Summary</h5>
+                    <div class="summary-row">
+                        <span>Base Value</span>
+                        <span>₹{{ total_price }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Collector Shipping</span>
+                        <span>Calculated at Step 2</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Coupon Discount</span>
+                        <span class="text-danger">- ₹{{ discount }}</span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Total Value</span>
+                        <span>₹{{ total_price1 }}</span>
+                    </div>
+
+                    <a href="{% url 'cart:payment' %}"
+                        class="btn-checkout mt-4 {% if out_of_stock_items %}disabled{% endif %}">
+                        Proceed to Checkout <i class="fas fa-chevron-right ms-2"></i>
+                    </a>
+
+                    <div class="text-center mt-3">
+                        <p class="text-muted small"><i class="fas fa-lock me-2 text-gold"></i> SSL Secure Checkout</p>
+                        <div class="d-flex justify-content-center gap-2 opacity-25">
+                            <i class="fab fa-cc-visa fa-2x"></i>
+                            <i class="fab fa-cc-mastercard fa-2x"></i>
+                            <i class="fab fa-cc-amex fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-cart-state">
+            <div class="empty-cart-icon"><i class="fas fa-car-side"></i></div>
+            <h2>Your Garage is Empty</h2>
+            <p>It seems you haven't selected any models for your collection yet. Start exploring our world-class
+                miniatures.</p>
+            <a href="{% url 'products:products' %}" class="btn-explore">Browse Collections</a>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Trust Strip -->
+    <section class="trust-strip">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-award"></i>
+                    <h6>Premium Quality</h6>
+                </div>
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-cube"></i>
+                    <h6>Safe Packaging</h6>
+                </div>
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-globe"></i>
+                    <h6>Worldwide Cargo</h6>
+                </div>
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-heart"></i>
+                    <h6>Collector Satisfaction</h6>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <h3 class="newsletter-title">Join The Collector's Circle</h3>
+            <p class="newsletter-sub">Receive privilege access to limited edition drops and member-only previews.</p>
+            <div class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Your executive email address">
+                <button class="newsletter-btn">JOIN NOW</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="footer-logo">NANORIDE<span>.</span></div>
+                    <p class="text-muted small">Curating the world's most detailed and authentic scale models for the
+                        discerning collector.</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <h6 class="text-white mb-4">SOCIAL SHOWROOM</h6>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="text-muted fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-muted fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-muted fs-5"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <h6 class="text-white mb-4">COLLECTOR SERVICES</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Authenticity Certificate</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Showroom Locations</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-5 pt-4 border-top border-secondary">
+                <p class="text-muted small mb-0">&copy; 2026 NanoRide Collectibles. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

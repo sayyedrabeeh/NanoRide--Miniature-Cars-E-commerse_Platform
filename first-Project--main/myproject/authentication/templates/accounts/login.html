@@ -1,0 +1,360 @@
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <title>Nanoride | Login</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #e6be8a;
+            --dark-bg: #1a1a1a;
+            --text-gray: #666;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 40px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0f0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top right, #1f1f1f 0%, #0f0f0f 100%);
+        }
+
+        .login-container {
+            display: flex;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+            width: 90%;
+            max-width: 1100px;
+            min-height: 650px;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .login-image {
+            width: 50%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)),
+            url("{% static 'images/1.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .login-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.4), transparent);
+        }
+
+        .login-image h2 {
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            font-size: 3rem;
+            color: var(--primary-gold);
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.2s ease-out 0.4s backwards;
+        }
+
+        .login-image p {
+            z-index: 1;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            animation: fadeIn 1.2s ease-out 0.6s backwards;
+        }
+
+        .login-form {
+            width: 50%;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        h3 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+
+        /* Floating Labels */
+        .form-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-control {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 16px 15px 12px;
+            height: 55px;
+            font-size: 16px;
+            background: #fcfcfc;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-gold);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(230, 190, 138, 0.15);
+        }
+
+        .form-control:placeholder-shown+label {
+            top: 18px;
+            font-size: 15px;
+            color: #888;
+        }
+
+        .form-control:focus+label,
+        .form-control:not(:placeholder-shown)+label {
+            top: 8px;
+            font-size: 11px;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 16px;
+            top: 8px;
+            font-size: 11px;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: all 0.2s ease-out;
+            background: transparent;
+        }
+
+        .btn-custom {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            border: none;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-custom:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .auth-links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .auth-links a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .auth-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .auth-links a.create-acc {
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 500px;
+                min-height: auto;
+            }
+
+            .login-image,
+            .login-form {
+                width: 100%;
+            }
+
+            .login-image {
+                height: 250px;
+                padding: 40px;
+            }
+
+            .login-image h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Officiality Styles */
+        .secure-badge {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1.2s ease-out 0.8s backwards;
+        }
+
+        .login-footer {
+            margin-top: 40px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .login-footer p {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .legal-links a {
+            font-size: 12px;
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .legal-links a:hover {
+            color: var(--primary-gold);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-image">
+            <h2>NANORIDE</h2>
+            <p>The World of Premium Miniatures</p>
+            <div class="secure-badge">
+                <i class="fas fa-shield-alt"></i> 100% Secure Login
+            </div>
+        </div>
+        <div class="login-form">
+            {% if messages %}
+            {% for message in messages %}
+            {% if 'login-page' in message.tags %}
+            <div class="alert alert-dismissible fade show {% if 'success' in message.tags %}alert-success{% elif 'error' in message.tags %}alert-danger{% else %}alert-info{% endif %}"
+                role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+            <h3>Welcome Back</h3>
+            <p class="subtitle">Please enter your details to sign in.</p>
+
+            <form method="POST" action="{% url 'authentication:login' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" name="username" placeholder=" " required>
+                    <label for="username">Username</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" name="password" placeholder=" " required>
+                    <label for="password">Password</label>
+                </div>
+
+                <button type="submit" class="btn btn-custom">
+                    <i class="fas fa-lock mr-2"></i> Secure Sign In
+                </button>
+
+                <div class="auth-links">
+                    <a href="{% url 'authentication:forgot_password' %}">Forgot Password?</a>
+                    <a href="{% url 'authentication:signup' %}" class="create-acc">Create Account</a>
+                </div>
+            </form>
+
+            <div class="login-footer">
+                <p>&copy; 2026 Nanoride Inc. All rights reserved.</p>
+                <div class="legal-links">
+                    <a href="#">Privacy Policy</a> &bull; <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

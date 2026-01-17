@@ -1,0 +1,1029 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercedes-Benz SLS AMG 1:18 Die-Cast | Premium Collector Edition | AutoGallery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/drift-zoom/1.4.0/drift-basic.min.css">
+       <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #262626;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Breadcrumb --- */
+        .breadcrumb-nav {
+            background: #000;
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--accent-gold);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: var(--border-color);
+        }
+
+        /* --- Image Gallery & Zoom --- */
+        .product-gallery {
+            position: sticky;
+            top: 100px;
+        }
+
+        .main-img-container {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            /* Removed overflow: hidden to allow side-zoom to be visible */
+            cursor: crosshair;
+            margin-bottom: 20px;
+        }
+
+        .main-img-container img {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+        }
+
+        /* Drift Zoom Customization - Professional Side Zoom */
+        .drift-zoom-pane {
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+        }
+
+        .drift-bounding-box {
+            background-color: rgba(255, 255, 255, 0.3);
+            border: 1px solid #ddd;
+            cursor: crosshair;
+        }
+
+        .thumb-gallery {
+            display: flex;
+            gap: 12px;
+        }
+
+        .thumb-item {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .thumb-item:hover,
+        .thumb-item.active {
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+        }
+
+        .thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px;
+        }
+
+        /* --- Product Info --- */
+        .badge-scale {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .product-brand {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .product-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .rating-reviews {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stars {
+            color: #f1c40f;
+        }
+
+        .reviews-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .current-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .limited-edition {
+            background: var(--accent-red);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .short-description {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            border-left: 3px solid var(--accent-gold);
+            padding-left: 20px;
+        }
+
+        /* --- Actions --- */
+        .actions-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 5px;
+        }
+
+        .qty-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        .qty-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            width: 40px;
+            text-align: center;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .btn-primary-buy {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            flex-grow: 1;
+            transition: var(--transition);
+        }
+
+        .btn-primary-buy:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary-cart {
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            flex-grow: 1;
+            transition: var(--transition);
+        }
+
+        .btn-secondary-cart:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-wishlist {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: #fff;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .btn-wishlist:hover {
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .stock-status {
+            font-size: 0.9rem;
+            color: #2ecc71;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            background: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #2ecc71;
+        }
+
+        /* --- Ratio/Scale Selector --- */
+        .ratio-selector {
+            cursor: pointer;
+        }
+
+        .ratio-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #000;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .ratio-selector input:checked+.ratio-btn {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .ratio-btn:hover {
+            border-color: var(--accent-gold);
+            color: #fff;
+        }
+
+        /* --- Highlights --- */
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-muted);
+        }
+
+        .highlight-item i {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+        }
+
+        .highlight-item span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* --- Detailed Sections --- */
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-gold);
+        }
+
+        .description-text {
+            color: var(--text-muted);
+            line-height: 2;
+            font-size: 1.05rem;
+        }
+
+        /* Specs Table */
+        .specs-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .specs-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .specs-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .specs-table td {
+            padding: 15px 25px;
+            font-size: 0.95rem;
+        }
+
+        .spec-label {
+            color: var(--text-muted);
+            width: 40%;
+            font-weight: 500;
+        }
+
+        .spec-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* --- Showcase Section --- */
+        .showcase-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1542362567-b05503f3f5f4?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-attachment: fixed;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            border-top: 2px solid var(--accent-gold);
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .showcase-content {
+            max-width: 600px;
+            padding: 40px;
+        }
+
+        /* --- Reviews --- */
+        .review-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 12px;
+            height: 100%;
+            transition: var(--transition);
+        }
+
+        .review-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-5px);
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: #262626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* --- Trust Strip --- */
+        .trust-strip {
+            background: #000;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 40px 0;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-item i {
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .trust-item h6 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 80px 0 40px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        @media (max-width: 992px) {
+            .product-gallery {
+                position: static;
+                margin-bottom: 50px;
+            }
+
+            .product-title {
+                font-size: 2.2rem;
+            }
+
+            .showcase-banner {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'products:home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'products:products' %}">Collections</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'products:brand_products' product.category.brand_name %}">{{product.category.brand_name }}</a></li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Product Section -->
+    <section class="container my-5 py-5">
+        <div class="row g-5">
+            <!-- Left: Gallery -->
+            <div class="col-lg-7">
+                <div class="product-gallery">
+                    <div class="main-img-container" id="img-container">
+                        {% with product.additional_images.first as first_image %}
+                        <img src="{% if first_image %}{{ first_image.image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                            id="main-product-img"
+                            data-zoom="{% if first_image %}{{ first_image.image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                            alt="{{ product.name }}">
+                        {% endwith %}
+                    </div>
+
+                    <div id="zoom-details-pane"
+                        style="position: absolute; left: 105%; top: 0; width: 500px; height: 500px; z-index: 1000;">
+                    </div>
+                    <div class="thumb-gallery">
+                        {% for image in product.additional_images.all %}
+                        <div class="thumb-item {% if forloop.first %}active{% endif %}"
+                            onclick="changeImage(this, '{{ image.image.url }}')">
+                            <img src="{{ image.image.url }}" alt="Thumb {{ forloop.counter }}">
+                        </div>
+                        {% empty %}
+                        <div class="thumb-item active">
+                            <img src="{% static 'images/default.jpg' %}" alt="No Images Available">
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="highlights-grid d-none d-lg-grid">
+                        <div class="highlight-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Official Licensed Miniature</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-hammer"></i>
+                            <span>Premium Die-Cast Body</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-car-side"></i>
+                            <span>Detailed Int & Ext</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-box"></i>
+                            <span>Collector-Grade Box</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Product Info -->
+            <div class="col-lg-5">
+                <span class="product-brand">{{ product.category.brand_name }}</span>
+                <h1 class="product-title">{{ product.name }}</h1>
+
+                <div class="badge-scale">Scale {{ product.size.first.name|default:"1:18" }}</div>
+
+                <div class="rating-reviews">
+                    <div class="stars">
+                        {% with ''|center:5 as range %}
+                        {% for _ in range %}
+                        <i class="{% if forloop.counter <= product.ratings %}fas{% else %}far{% endif %} fa-star"></i>
+                        {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <span class="reviews-text">({{ product.ratings|default:"0" }} / 5 Service Rating)</span>
+                </div>
+
+                <div class="price-section">
+                    <span class="current-price">₹{{ product.price }}</span>
+                    {% if product.offer > 0 %}
+                    <span class="limited-edition">{{ product.offer }}% OFF</span>
+                    {% endif %}
+                </div>
+
+                <p class="short-description">
+                    {{ product.description|truncatewords:50 }}
+                </p>
+
+                <div class="purchase-box">
+                    <form action="{% url 'cart:cart_view' 'add' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                        <div class="mb-4">
+                            <label class="text-gold small fw-bold text-uppercase d-block mb-3">Select Scale
+                                Preference</label>
+                            <div class="d-flex gap-2">
+                                {% for ps in sizes_stock %}
+                                <label class="ratio-selector">
+                                    <input type="radio" name="product_size" value="{{ ps.id }}" {% if forloop.first%}checked{%endif %} class="d-none">
+                                    <span class="ratio-btn">{{ ps.name }}</span>
+                                </label>
+                                {% empty %}
+                                <div class="text-muted small">Standard Edition (One Size)</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="actions-group">
+                            <div class="qty-selector">
+                                <button type="button" class="qty-btn" onclick="updateQty(-1)"><i
+                                        class="fas fa-minus"></i></button>
+                                <input type="text" name="quantity" value="1" id="qtyInput" class="qty-input" readonly>
+                                <button type="button" class="qty-btn" onclick="updateQty(1)"><i
+                                        class="fas fa-plus"></i></button>
+                            </div>
+                            <button type="submit" class="btn-primary-buy">Buy It Now</button>
+                            <button type="submit" class="btn-secondary-cart">Add to Cart</button>
+                            <a href="{% url 'products:wishlist' 'add' product.id %}"
+                                class="btn-wishlist d-flex align-items-center justify-content-center">
+                                <i class="far fa-heart"></i>
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="stock-status">
+                        <div class="stock-dot"></div>
+                        <span>Available for Showroom Display</span>
+                    </div>
+                    <p class="text-muted small mt-2">Collector's item carefully inspected for absolute authenticity.</p>
+                </div>
+
+                <div class="highlights-grid d-lg-none my-4">
+                    <div class="highlight-item"><i class="fas fa-check-circle"></i><span>Licensed</span></div>
+                    <div class="highlight-item"><i class="fas fa-hammer"></i><span>Die-Cast</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Tabs Section -->
+    <section class="section-padding bg-black border-top border-secondary">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <h2 class="section-title">Showroom Heritage</h2>
+                    <div class="description-text mb-4">
+                        {{ product.description|linebreaks }}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="section-title">Technical Specifications</h2>
+                    <table class="specs-table">
+                        <tr>
+                            <td class="spec-label">Brand</td>
+                            <td class="spec-value">{{ product.category.brand_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="spec-label">Category</td>
+                            <td class="spec-value">{{ product.Types.category }}</td>
+                        </tr>
+                        <tr>
+                            <td class="spec-label">Material</td>
+                            <td class="spec-value">Die-cast Metal & High-Grade ABS</td>
+                        </tr>
+                        <tr>
+                            <td class="spec-label">Collection</td>
+                            <td class="spec-value">{{ product.applied_offer|title }} Series</td>
+                        </tr>
+                        <tr>
+                            <td class="spec-label">Vault Id</td>
+                            <td class="spec-value">NR-{{ product.id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="spec-label">Packaging</td>
+                            <td class="spec-value">Premium Display Base Included</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detail Showcase -->
+    <div class="showcase-banner">
+        <div class="container">
+            <div class="showcase-content bg-black shadow-lg">
+                <span class="text-gold fw-bold text-uppercase small">Cinema Presentation</span>
+                <h2 class="text-white mt-2 mb-4">Uncompromising Realism</h2>
+                <p class="text-muted">Designed for the serious collector who demands the highest level of accuracy and
+                    build quality. Experience the thrill of the track on your shelf.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collector Reviews -->
+    <section class="section-padding container">
+        <h2 class="section-title">Expert Reviews</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="review-card">
+                    <div class="reviewer-info">
+                        <div class="avatar">JD</div>
+                        <div>
+                            <h6 class="mb-0">James Donovan</h6>
+                            <small class="text-muted">Pro Collector</small>
+                        </div>
+                    </div>
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-muted small italic">"The paint work on this Mercedes is flawless. I have models three
+                        times the price that don't look this authentic."</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="review-card">
+                    <div class="reviewer-info">
+                        <div class="avatar">SR</div>
+                        <div>
+                            <h6 class="mb-0">Sarah Richards</h6>
+                            <small class="text-muted">Display Specialist</small>
+                        </div>
+                    </div>
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-muted small italic">"The weight and feel are perfect. The interior dashboard detail
+                        is readable even without a magnifier."</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="review-card">
+                    <div class="reviewer-info">
+                        <div class="avatar">MK</div>
+                        <div>
+                            <h6 class="mb-0">Marcus King</h6>
+                            <small class="text-muted">Verified Buyer</small>
+                        </div>
+                    </div>
+                    <div class="stars mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="far fa-star"></i>
+                    </div>
+                    <p class="text-muted small italic">"Superb packaging. As a collector, the box condition matters, and
+                        it arrived in mint condition."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products -->
+    <section class="section-padding bg-black border-top border-secondary">
+        <div class="container">
+            <h2 class="section-title">Complete Your Collection</h2>
+            <div class="row g-4" id="related-grid">
+                {% for related in related_products %}
+                <div class="col-6 col-md-3">
+                    <div class="card bg-black border-secondary text-white h-100">
+                        <a href="{% url 'products:products_detail' related.id %}">
+                            <img src="{% if related.additional_images.first %}{{ related.additional_images.first.image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                                class="card-img-top p-3" alt="{{ related.name }}"
+                                style="height: 200px; object-fit: contain;">
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <small class="text-gold">Scale {{ related.size.first.name|default:"1:18" }}</small>
+                            <h6 class="card-title my-2">{{ related.name }}</h6>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">₹{{ related.price }}</span>
+                                <a href="{% url 'products:products_detail' related.id %}"
+                                    class="btn btn-sm btn-outline-warning">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">No related models found in this collection block.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Strip -->
+    <section class="trust-strip">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <h6>Secure Payments</h6>
+                </div>
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-globe"></i>
+                    <h6>Global Shipping</h6>
+                </div>
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-box"></i>
+                    <h6>Safe Packaging</h6>
+                </div>
+                <div class="col-6 col-md-3 trust-item">
+                    <i class="fas fa-undo"></i>
+                    <h6>Easy Returns</h6>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="container my-5 py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h3 class="mb-4">The Collector's Club</h3>
+                <p class="text-muted mb-4">Be the first to hear about new limited edition drops and exclusive
+                    member-only models.</p>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control bg-dark text-white border-secondary"
+                        placeholder="Enter email address">
+                    <button class="btn btn-warning px-4 fw-bold">JOIN CLUB</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-top border-secondary">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="footer-logo">Mini<span>Drive</span></div>
+                    <p class="text-muted small">The ultimate destination for luxury automotive miniatures. We curate
+                        only the finest collector-grade die-cast models for enthusiasts worldwide.</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <h6 class="text-white mb-4">SOCIAL SHOWROOM</h6>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="text-white fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <h6 class="text-white mb-4">SUPPORT</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Authenticity Certificate</a></li>
+                        <li><a href="#">Contact Concierge</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+        <div id="cartToast" class="toast bg-dark text-white border-warning" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="toast-header bg-dark text-warning border-secondary">
+                <i class="fas fa-shopping-cart me-2"></i>
+                <strong class="me-auto">Showroom Update</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-white" id="toastMessage">
+                Model added to your collection.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Drift Zoom JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/drift-zoom/1.4.0/Drift.min.js"></script>
+
+    <!-- Image Zoom & Interaction JS -->
+    <script>
+        // Auto-show messages as toasts
+        document.addEventListener('DOMContentLoaded', function () {
+            {% if messages %}
+            {% for message in messages %}
+            showToast("{{ message }}", "{{ message.tags }}");
+            {% endfor %}
+            {% endif %}
+        });
+
+        function showToast(message, tags) {
+            const toastEl = document.getElementById('cartToast');
+            const toastBody = document.getElementById('toastMessage');
+
+            toastBody.textContent = message;
+
+            // Adjust styling based on tags
+            if (tags === 'error' || tags === 'danger') {
+                toastEl.classList.add('border-danger');
+                toastEl.classList.remove('border-warning');
+            } else {
+                toastEl.classList.add('border-warning');
+                toastEl.classList.remove('border-danger');
+            }
+
+            const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            toast.show();
+        }
+
+        let driftInstance;
+
+        function initDrift() {
+            const mainImg = document.getElementById('main-product-img');
+            const paneContainer = document.getElementById('zoom-details-pane');
+
+            if (window.innerWidth > 992 && mainImg) {
+                driftInstance = new Drift(mainImg, {
+                    paneContainer: paneContainer,
+                    inlinePane: false,
+                    containInline: true,
+                    hoverBoundingBox: true,
+                    zoomFactor: 3
+                });
+            }
+        }
+
+        function changeImage(element, src) {
+            const mainImg = document.getElementById('main-product-img');
+            if (mainImg) {
+                mainImg.src = src;
+                // For Drift, we update the data-zoom attribute as well
+                mainImg.setAttribute('data-zoom', src);
+            }
+
+            document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function updateQty(change) {
+            const input = document.getElementById('qtyInput');
+            if (input) {
+                let val = parseInt(input.value);
+                val += change;
+                if (val < 1) val = 1;
+                input.value = val;
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initDrift);
+
+        // Re-init on resize if needed
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 992 && driftInstance) {
+                driftInstance.disable();
+            } else if (window.innerWidth > 992 && driftInstance) {
+                driftInstance.enable();
+            }
+        });
+    </script>
+</body>
+
+</html>

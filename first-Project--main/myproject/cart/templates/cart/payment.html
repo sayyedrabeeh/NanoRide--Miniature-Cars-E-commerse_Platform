@@ -1,0 +1,892 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment | Nanoride Collector Vault</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Frameworks & Icons -->
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-dark: #161616;
+            --accent-gold: #d4af37;
+            --accent-silver: #e5e5e5;
+            --accent-red: #ff3b3b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #2a2a2a;
+            --input-bg: #1f1f1f;
+            --success: #28a745;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Header --- */
+        .premium-header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--text-primary);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .logo-text span {
+            color: var(--accent-gold);
+        }
+
+        /* --- Breadcrumbs & Progress --- */
+        .checkout-stepper {
+            padding: 3rem 0;
+        }
+
+        .stepper-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .stepper-container::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 25%;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--card-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: var(--text-secondary);
+            transition: 0.4s;
+        }
+
+        .step-item.active .step-icon {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .step-item.completed .step-icon {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .step-item.active .step-label {
+            color: var(--text-primary);
+        }
+
+        /* --- Main Layout --- */
+        .checkout-grid {
+            padding-bottom: 5rem;
+        }
+
+        .premium-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: 0.3s;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            color: var(--accent-gold);
+        }
+
+        .section-title i {
+            margin-right: 15px;
+            font-size: 1rem;
+        }
+
+        /* --- Address Cards --- */
+        .address-card {
+            cursor: pointer;
+            position: relative;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: 0.3s;
+        }
+
+        .address-card:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .address-card input[type="radio"] {
+            display: none;
+        }
+
+        .address-card input[type="radio"]:checked+.address-box {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .address-box {
+            display: block;
+        }
+
+        .address-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .address-details {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .check-mark {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: var(--accent-gold);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .address-card input[type="radio"]:checked~.check-mark {
+            opacity: 1;
+        }
+
+        /* --- Payment Methods --- */
+        .payment-method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .pay-card {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .pay-card:hover:not(.disabled) {
+            border-color: var(--accent-gold);
+            transform: translateY(-5px);
+        }
+
+        .pay-card.active {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .pay-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .pay-card.active i {
+            color: var(--accent-gold);
+        }
+
+        .pay-card h6 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .pay-card.active h6 {
+            color: var(--text-primary);
+        }
+
+        .pay-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        /* --- Order Summary (Right Rail) --- */
+        .order-summary-box {
+            position: sticky;
+            top: 120px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .summary-row.total {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .summary-row.discount {
+            color: var(--accent-red);
+        }
+
+        .summary-item-card {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .item-thumb {
+            width: 70px;
+            height: 70px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-details h6 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .item-details p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* --- Buttons & Forms --- */
+        .premium-btn {
+            width: 100%;
+            padding: 1.25rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-gold {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-gold:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+            background: #e5bd4a;
+        }
+
+        .btn-gold:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .form-control-premium {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .form-control-premium:focus {
+            background: var(--input-bg);
+            border-color: var(--accent-gold);
+            box-shadow: none;
+            color: var(--text-primary);
+        }
+
+        .wallet-banner {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-info h6 {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+        }
+
+        .wallet-amount {
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        /* --- Toasts/Alerts --- */
+        .premium-alert {
+            background: var(--card-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* --- Footer --- */
+        .minimal-footer {
+            padding: 4rem 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 15px;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .stepper-container::before {
+                top: 20px;
+            }
+
+            .step-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .premium-header {
+                padding: 1rem 0;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .order-summary-box {
+                position: relative;
+                top: 0;
+                margin-top: 2rem;
+            }
+
+            .sticky-mobile-pay {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--bg-dark);
+                padding: 1rem;
+                border-top: 1px solid var(--border-color);
+                z-index: 1000;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="premium-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="{% url 'products:home' %}" class="logo-text">Nano<span>ride</span></a>
+            <div class="secure-badge d-none d-md-flex align-items-center text-success small fw-bold">
+                <i class="fas fa-lock me-2"></i> 256-BIT SSL ENCRYPTED
+            </div>
+            <a href="{% url 'cart:cart_view' %}"
+                class="btn btn-outline-secondary btn-sm rounded-pill text-white border-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Back to Cart
+            </a>
+        </div>
+    </header>
+
+    <!-- Progress Indicator -->
+    <section class="checkout-stepper">
+        <div class="container">
+            <div class="stepper-container">
+                <div class="step-item completed">
+                    <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="step-label">Cart</div>
+                </div>
+                <div class="step-item completed">
+                    <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="step-label">Address</div>
+                </div>
+                <div class="step-item active">
+                    <div class="step-icon"><i class="fas fa-credit-card"></i></div>
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <div class="step-label">Showroom</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Payment Flow -->
+    <div class="container checkout-grid">
+        <form method="POST" action="{% url 'cart:payment' %}" id="mainPaymentForm">
+            {% csrf_token %}
+            <input type="hidden" name="discount" value="{{ discount }}">
+            <input type="hidden" name="coupon_code" value="{{ coupon_code }}">
+
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-lg-8">
+
+                    {% if messages %}
+                    <div class="premium-alert">
+                        {% for message in messages %}
+                        <div
+                            class="d-flex align-items-center gap-3 mb-2 {% if message.tags == 'error' %}text-danger{% else %}text-success{% endif %}">
+                            <i
+                                class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                            <span class="small">{{ message }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if error %}
+                    <div
+                        class="alert alert-danger bg-danger text-white border-0 py-3 px-4 mb-4 rounded-3 d-flex align-items-center">
+                        <i class="fas fa-shield-alt me-3 fs-4"></i>
+                        <div>{{ error }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Addresses and Payment consolidated -->
+
+                    <!-- Address Selection -->
+                    <div class="premium-card">
+                        <div class="section-title">
+                            <i class="fas fa-shipping-fast"></i> Delivery Showroom Address
+                        </div>
+
+                        <div class="row">
+                            {% for address in addresses %}
+                            <div class="col-md-6">
+                                <label class="address-card">
+                                    <input type="radio" name="selected_address" value="{{ address.id }}" required {% if forloop.first %}checked{% endif %}>
+                                    <div class="address-box">
+                                        <div class="address-name">{{ address.address_line1 }}</div>
+                                        <div class="address-details">
+                                            {{ address.city }}, {{ address.state }} - {{ address.postal_code }}<br>
+                                            <span class="text-white-50"><i class="fas fa-phone-alt me-1"></i>
+                                                {{address.phone_number }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="check-mark"><i class="fas fa-check-circle fs-5"></i></div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="button" class="btn btn-link text-gold p-0 mt-2 text-decoration-none fw-600 small"
+                            id="showAddressModal">
+                            <i class="fas fa-plus-circle me-1"></i> Deliver to a new vault
+                        </button>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="premium-card" id="paymentMethodsSection">
+                        <div class="section-title">
+                            <i class="fas fa-shield-check"></i> Secure Payment Method
+                        </div>
+
+                        <div class="payment-method-grid">
+                            <!-- Razorpay -->
+                            <div class="pay-card active" data-method="razorpay">
+                                <i class="fas fa-qrcode"></i>
+                                <h6>UPI / Razorpay</h6>
+                                <input type="radio" name="payment_method" value="razorpay" checked class="d-none">
+                            </div>
+
+                            <!-- COD (Condition-based) -->
+                            <div class="pay-card {% if total_price > 1000 %}disabled{% endif %}" data-method="cod">
+                                <i class="fas fa-hand-holding-dollar"></i>
+                                <h6>Cash on Delivery</h6>
+                                <input type="radio" name="payment_method" value="cod" class="d-none" {% if total_price > 1000 %}disabled{% endif %}>
+                            </div>
+
+                            <!-- Wallet -->
+                            <div class="pay-card {% if wallet_balance < total_price %}disabled{% endif %}"
+                                data-method="wallet">
+                                <i class="fas fa-wallet"></i>
+                                <h6>Wallet Balance (₹{{ wallet_balance }})</h6>
+                                <input type="radio" name="payment_method" value="wallet" class="d-none" {% if wallet_balance < total_price %}disabled{% endif %}>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-none d-lg-block">
+                        <div class="d-flex align-items-center gap-3 text-secondary small py-2">
+                            <i class="fas fa-user-shield fs-5"></i>
+                            <div>Your payment information is encrypted and never stored on our servers. Purchases are
+                                protected by our Collector Protection Program.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column (Summary) -->
+                <div class="col-lg-4">
+                    <div class="order-summary-box">
+                        <div class="premium-card">
+                            <h5 class="fw-800 mb-4 pb-2 border-bottom border-secondary">Order Summary</h5>
+
+                            <!-- Items List -->
+                            <div class="summary-items-scroll pe-2" style="max-height: 300px; overflow-y: auto;">
+                                {% for i in cart_items %}
+                                <div class="summary-item-card">
+                                    <div class="item-thumb">
+                                        {% with first_image=i.product.additional_images.first %}
+                                        <img src="{% if first_image %}{{ first_image.image.url }}{% else %}{{ i.product.image.url }}{% endif %}"
+                                            alt="{{ i.product.name }}">
+                                        {% endwith %}
+
+                                    </div>
+                                    <div class="item-details">
+                                        <h6>{{ i.product.name }}</h6>
+                                        <p>Scale: {{ i.size.name }} | Qty: {{ i.quantity }}</p>
+                                        <div class="fw-bold mt-1 text-gold">₹{{ i.item_total }}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Coupon Section -->
+                            <div class="mt-4 pt-4 border-top border-secondary">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="small fw-600">Promo Code</span>
+                                    {% if coupon_code %}
+                                    <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.75rem;">{{ coupon_code }} APPLIED</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="input-group">
+                                    <input type="text" id="coupon_input"
+                                        class="form-control form-control-premium py-2 bg-dark" placeholder="Enter code"
+                                        value="{{ coupon_code }}">
+                                    <button
+                                        class="btn {% if coupon_code %}btn-danger{% else %}btn-outline-gold{% endif %}"
+                                        type="button" id="applyCouponBtn"
+                                        style="min-width: 80px; border-color: var(--border-color); color: white;">
+                                        {% if coupon_code %}Remove{% else %}Apply{% endif %}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Totals -->
+                            <div class="mt-4 pt-4 border-top border-secondary">
+                                <div class="summary-row">
+                                    <span>Subtotal</span>
+                                    <span>₹{{ total_price|add:discount|default:0 }}</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Shipping</span>
+                                    <span class="text-success">FREE</span>
+                                </div>
+                                {% if discount %}
+                                <div class="summary-row discount">
+                                    <span>Collector Discount</span>
+                                    <span>-₹{{ discount }}</span>
+                                </div>
+                                {% endif %}
+
+                                <div class="summary-row total">
+                                    <span>Order Total</span>
+                                    <span class="text-gold">₹{{ total_price }}</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 sticky-mobile-pay">
+                                <button type="submit" class="premium-btn btn-gold" id="paySecurelyBtn">
+                                    <i class="fas fa-lock"></i> Pay Securely
+                                </button>
+                                <p class="text-center text-secondary x-small mt-3 mb-0">By clicking "Pay Securely" you
+                                    agree to our Terms of Sale.</p>
+                            </div>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="d-flex justify-content-center gap-4 opacity-50 mt-4">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" height="20"
+                                alt="PayPal">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
+                                height="15" alt="Visa">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
+                                height="20" alt="Mastercard">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Address Modal -->
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="background: var(--card-dark); border-radius: 15px;">
+                <div class="modal-header border-bottom border-secondary py-4 px-4">
+                    <h5 class="modal-title fw-800 text-gold text-uppercase letter-spacing-1">Add New Vault Details</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="newAddressForm" method="POST"
+                        action="{% url 'user_profile:address' %}?next=/cart/payment/">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-12 form-group">
+                                <label class="small text-secondary mb-2">Street Address</label>
+                                <input type="text" name="address_line1" class="form-control form-control-premium"
+                                    required>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="small text-secondary mb-2">City</label>
+                                <input type="text" name="city" class="form-control form-control-premium" required>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="small text-secondary mb-2">State</label>
+                                <input type="text" name="state" class="form-control form-control-premium" required>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="small text-secondary mb-2">Postal Code</label>
+                                <input type="text" name="postal_code" class="form-control form-control-premium"
+                                    required>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="small text-secondary mb-2">Country</label>
+                                <select name="country" class="form-control form-control-premium" required>
+                                    <option value="IN">India</option>
+                                    <option value="US">United States</option>
+                                    <option value="GB">United Kingdom</option>
+                                </select>
+                            </div>
+                            <div class="col-12 form-group">
+                                <label class="small text-secondary mb-2">Phone Number</label>
+                                <input type="text" name="phone_number" class="form-control form-control-premium"
+                                    required>
+                            </div>
+                            <div class="col-12 mt-4 form-group">
+                                <button type="submit" class="premium-btn btn-gold py-3">Register Address</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Form for Coupon Ajax/Submit -->
+    <form id="couponActionForm" method="POST" action="{% url 'cart:apply_coupon' %}" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="coupon_code" id="hidden_coupon_code">
+        <input type="hidden" name="apply_coupon" value="1" id="coupon_action">
+    </form>
+
+    <!-- Footer -->
+    <footer class="minimal-footer">
+        <div class="container">
+            <div class="footer-links mb-3">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Refund Policy</a>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <p>&copy; 2026 Nanoride Miniature Cars. All digital assets & designs are property of Nanoride.</p>
+            <div class="mt-3 opacity-50">
+                <i class="fab fa-cc-visa fa-2x mx-2"></i>
+                <i class="fab fa-cc-mastercard fa-2x mx-2"></i>
+                <i class="fab fa-cc-amex fa-2x mx-2"></i>
+                <i class="fab fa-cc-paypal fa-2x mx-2"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/popper.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Address Modal Trigger (Bootstrap 4 Syntax)
+            $('#showAddressModal').on('click', function () {
+                $('#addressModal').modal('show');
+            });
+
+            // Reopen modal if server returns validation errors
+            {% if has_errors %}
+            $('#addressModal').modal('show');
+            {% endif %}
+
+            // Payment Method Card Interactivity
+            $('.pay-card').on('click', function () {
+                if ($(this).hasClass('disabled')) return;
+
+                $('.pay-card').removeClass('active');
+                $(this).addClass('active');
+
+                // Radio checking
+                $('.pay-card input[type="radio"]').prop('checked', false);
+                $(this).find('input[type="radio"]').prop('checked', true);
+            });
+
+            // Coupon Logic
+            $('#applyCouponBtn').on('click', function () {
+                const code = $('#coupon_input').val().trim();
+                if (!code && !$(this).hasClass('btn-danger')) return;
+
+                $('#hidden_coupon_code').val(code);
+                if ($(this).hasClass('btn-danger')) {
+                    $('<input>').attr({ type: 'hidden', name: 'remove_coupon', value: '1' }).appendTo('#couponActionForm');
+                }
+                $('#couponActionForm').submit();
+            });
+
+            // Razorpay Integration Logic
+            {% if payment_method == 'razorpay' %}
+            var rzpOptions = {
+                "key": "{{ razorpay_key_id }}",
+                "amount": {{ total_price_in_paise }
+        },
+            "currency": "INR",
+            "name": "Nanoride Miniature Cars",
+            "description": "Secure Collector Purchase",
+            "image": "{% static 'images/icons/logo-01.png' %}",
+            "order_id": "{{ razorpay_order_id }}",
+            "handler": function (response) {
+                window.location.href = "{% url 'cart:success_page' %}?order_id={{ order_id }}";
+            },
+            "prefill": {
+            "name": "{{ user.username|escapejs }}",
+            "email": "{{ user.email|escapejs }}"
+        },
+            "theme": { "color": "#d4af37" },
+            "modal": {
+            "ondismiss": function () {
+                window.location.href = "{% url 'cart:payment' %}";
+            }
+        }
+            };
+        var rzp = new Razorpay(rzpOptions);
+        rzp.open();
+        {% endif %}
+
+        // Form Validation on Submit
+        $('#mainPaymentForm').on('submit', function (e) {
+            const checkedAddress = $('input[name="selected_address"]:checked').val();
+            if (!checkedAddress) {
+                alert("Please select a delivery vault address.");
+                e.preventDefault();
+                return false;
+            }
+
+            // Button state
+            $('#paySecurelyBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+        });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <title>404 - Page Not Found</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .console {
+            text-align: center;
+            border: 2px solid #00aaff;
+            padding: 30px;
+            width: 400px;
+            background-color: #fafafa;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 6em;
+            margin: 0;
+            color: #00aaff;
+            letter-spacing: 5px;
+        }
+        p {
+            font-size: 1.3em;
+            color: #333;
+            margin: 20px 0;
+        }
+        .btn {
+            background-color: #00aaff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: 2px solid #00aaff;
+            transition: 0.3s ease;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover {
+            background-color: #0099cc;
+            border-color: #0099cc;
+        }
+        .console p {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5em;
+            animation: blink 1s infinite step-end;
+            color: #00aaff;
+        }
+        @keyframes blink {
+            50% {
+                color: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="console">
+        <h1>404</h1>
+        <p>Page Not Found... Searching for a solution...</p>
+        <a href="{%  url 'products:home' %}" class="btn">Go to Home</a>
+    </div>
+</body>
+</html>

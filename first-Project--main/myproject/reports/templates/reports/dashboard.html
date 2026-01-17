@@ -1,0 +1,825 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collector Control Panel | NanoRide Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="icon" type="image/png" href="{% static 'images/fav.jpg' %}">
+
+    <style>
+        :root {
+            --bg-dark: #080808;
+            --bg-sidebar: #0f0f0f;
+            --bg-card: #161616;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --accent-green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            padding: 0 30px 40px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-brand span {
+            color: var(--accent-gold);
+        }
+
+        .sidebar-brand i {
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .nav-item.active i {
+            color: #000;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            height: 80px;
+            background: rgba(8, 8, 8, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 280px;
+            z-index: 999;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px 10px 45px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-icon {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .action-icon:hover {
+            color: var(--accent-gold);
+        }
+
+        .badge-pulse {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(230, 57, 70, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .admin-profile:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .admin-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .content-wrapper {
+            margin-left: 280px;
+            padding: 120px 40px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- KPI Cards --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .kpi-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .kpi-trend {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        /* --- Charts Section --- */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .chart-filter select {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* --- Tables --- */
+        .card-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .custom-table th {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .custom-table td {
+            background: var(--bg-dark);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+        }
+
+        .custom-table tr td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .custom-table tr td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .product-thumb {
+            width: 45px;
+            height: 45px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: #000;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .badge-stock {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .badge-low {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+
+        /* --- Brand/Category Cards --- */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .mini-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+        }
+
+        .mini-card:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .mini-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: #fff;
+            padding: 5px;
+            border: 2px solid var(--border-color);
+        }
+
+        .mini-info h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .mini-info span {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar-brand span,
+            .nav-item span {
+                display: none;
+            }
+
+            .sidebar-brand {
+                padding: 0 20px 40px;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .top-bar {
+                left: 80px;
+            }
+
+            .content-wrapper {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+     <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-car-side"></i>
+            <span>NANORIDE<span>.</span></span>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'products:home' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Storefront</span>
+            </a>
+            <a href="{% url 'reports:admin_dashboard' %}" class="nav-item active">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'order:order_admin' %}" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="{% url 'products:products_admin' %}" class="nav-item">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a>
+            <a href="{% url 'products:catogery' %}" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="{% url 'products:Type' %}" class="nav-item">
+                <i class="fas fa-layer-group"></i>
+                <span>Types</span>
+            </a>
+            <a href="{% url 'offers_coupons:coupon' %}" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Coupons</span>
+            </a>
+
+            <a href="{% url 'reports:sales_report' %}" class="nav-item ">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Sales Reports</span>
+            </a>
+            <a href="{% url 'user_profile:users' %}" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Customers</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto">
+            <a href="/logout/" class="nav-item text-danger border border-danger border-opacity-25">
+                <i class="fas fa-power-off"></i>
+                <span>Security Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Search manifest, collectors or orders...">
+        </div>
+
+        <div class="admin-actions">
+            <div class="action-icon">
+                <i class="far fa-bell"></i>
+                <div class="badge-pulse"></div>
+            </div>
+            <div class="action-icon">
+                <i class="far fa-envelope"></i>
+            </div>
+            <div class="admin-profile">
+                <img src="{% static 'images/3.jpeg' %}" alt="Admin" class="admin-avatar">
+                <span class="admin-name">{{ user.username|default:"System Admin" }}</span>
+                <i class="fas fa-chevron-down small text-muted"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <div class="page-header d-flex justify-content-between align-items-end">
+            <div>
+                <h2>Intelligence Overview</h2>
+                <p>Tracking high-performance miniature market dynamics.</p>
+            </div>
+            <div class="chart-filter">
+                <form method="GET" action="">
+                    <select name="filter" onchange="this.form.submit()">
+                        <option value="daily" {% if filter_option == 'daily' %}selected{% endif %}>Real-time Feed</option>
+                        <option value="weekly" {% if filter_option == 'weekly' %}selected{% endif %}>Weekly Shift</option>
+                        <option value="monthly" {% if filter_option == 'monthly' %}selected{% endif %}>Monthly Audit
+                        </option>
+                        <option value="yearly" {% if filter_option == 'yearly' %}selected{% endif %}>Annual Perspective
+                        </option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-wallet"></i></div>
+                <div class="kpi-value">₹{{ total_revenue|default:"0.00" }}</div>
+                <div class="kpi-label">Gross Acquisition Value</div>
+                <div class="kpi-trend"><i class="fas fa-arrow-up me-1"></i> 14.2%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-shopping-bag"></i></div>
+                <div class="kpi-value">{{ total_orders|default:"0" }}</div>
+                <div class="kpi-label">Total Transactions</div>
+                <div class="kpi-trend"><i class="fas fa-arrow-up me-1"></i> 8.5%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-users"></i></div>
+                <div class="kpi-value">{{ total_customers|default:"0" }}</div>
+                <div class="kpi-label">Active Collectors</div>
+                <div class="kpi-trend text-muted"><i class="fas fa-minus me-1"></i> 0%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="kpi-value">{{ low_stock_count|default:"0" }}</div>
+                <div class="kpi-label">Manifest Alerts (Low Stock)</div>
+                <div class="kpi-trend text-danger"><i class="fas fa-arrow-down me-1"></i> 2 Critical</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Line Chart: Sales Trends -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Market Trajectory</div>
+                    <div class="d-flex gap-2">
+                        <span
+                            class="badge bg-secondary bg-opacity-10 text-gold border border-gold border-opacity-25 pt-2">Growth
+                            Analysis</span>
+                    </div>
+                </div>
+                <canvas id="salesChart" style="max-height: 400px;"></canvas>
+            </div>
+
+            <!-- Pie Chart: Brand Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Portfolio Mix</div>
+                </div>
+                <canvas id="bestSellingBrandsChart" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+
+        <!-- Data Tables -->
+        <div class="row g-4">
+            <!-- Top Selling Table -->
+            <div class="col-lg-7">
+                <div class="card-table">
+                    <div class="table-title">Performance Vanguard (Top Selling)</div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Model Manifest</th>
+                                    <th>Inventory Status</th>
+                                    <th>Volume Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in best_selling_products %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="{{ item.image_url }}" class="product-thumb" alt="Model">
+                                            <div>
+                                                <div class="fw-bold">{{ item.product__name }}</div>
+                                                <div class="text-muted small">UID: #{{ item.id|default:"001" }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge badge-stock">Secure Stock</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold fs-5">{{ item.total_sales }}</div>
+                                        <div class="text-muted small">Units Dispatched</div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category/Brand Highlights -->
+            <div class="col-lg-5">
+                <div class="card-table">
+                    <div class="table-title">Category Dominion</div>
+                    <div class="category-grid">
+                        {% for item in best_selling_categories %}
+                        <div class="mini-card">
+                            <img src="{{ item.category_image_url|default:'/media/default-category.jpg' }}"
+                                class="mini-img" alt="Cat">
+                            <div class="mini-info">
+                                <h5>{{ item.product__Types__category|default:item.product__category__brand_name }}</h5>
+                                <span>{{ item.total_sales }} Collections</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="content-wrapper py-4 mt-0 bg-transparent border-top border-secondary border-opacity-10">
+        <div class="d-flex justify-content-between align-items-center text-muted small">
+            <div>&copy; 2026 NanoRide Intelligence v2.1</div>
+            <div>Automotive Collectors Global Command Hub</div>
+        </div>
+    </footer>
+
+    <!-- Chart Configuration -->
+    <script>
+        const chartColors = {
+            gold: '#d4af37',
+            goldAlpha: 'rgba(212, 175, 55, 0.1)',
+            red: '#e63946',
+            green: '#2ecc71',
+            blue: '#3498db',
+            purple: '#9b59b6',
+            border: '#222222'
+        };
+
+        Chart.defaults.color = '#888888';
+        Chart.defaults.font.family = "'Poppins', sans-serif";
+        Chart.defaults.plugins.tooltip.backgroundColor = '#161616';
+        Chart.defaults.plugins.tooltip.borderColor = '#d4af37';
+        Chart.defaults.plugins.tooltip.borderWidth = 1;
+
+        // Sales Trends Chart
+        var salesData = {{ sales_by_month| safe }};
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Market Volume (₹)',
+                    data: salesData,
+                    borderColor: chartColors.gold,
+                    backgroundColor: (context) => {
+                        const chart = context.chart;
+                        const { ctx, chartArea } = chart;
+                        if (!chartArea) return null;
+                        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                        gradient.addColorStop(0, 'rgba(212, 175, 55, 0.3)');
+                        gradient.addColorStop(1, 'rgba(212, 175, 55, 0)');
+                        return gradient;
+                    },
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#000',
+                    pointBorderColor: chartColors.gold,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: chartColors.gold
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { callback: value => '₹' + value }
+                    },
+                    x: { grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Brand Distribution Chart
+        var bestSellingBrandsNames = {{ best_selling_brands_names| safe }};
+        var bestSellingBrandsSales = {{ best_selling_brands_sales| safe }};
+        var ctx3 = document.getElementById('bestSellingBrandsChart').getContext('2d');
+        var bestSellingBrandsChart = new Chart(ctx3, {
+            type: 'doughnut',
+            data: {
+                labels: bestSellingBrandsNames,
+                datasets: [{
+                    data: bestSellingBrandsSales,
+                    backgroundColor: [chartColors.gold, chartColors.red, chartColors.green, chartColors.blue, chartColors.purple],
+                    borderColor: '#161616',
+                    borderWidth: 3,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
