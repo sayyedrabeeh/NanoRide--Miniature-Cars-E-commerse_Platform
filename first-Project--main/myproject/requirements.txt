@@ -51,3 +51,6 @@ webencodings==0.5.1
 xhtml2pdf==0.2.16
 XlsxWriter==3.2.0
 zopfli==0.2.3.post1
+cloudinary
+django-cloudinary-storage
+gunicorn

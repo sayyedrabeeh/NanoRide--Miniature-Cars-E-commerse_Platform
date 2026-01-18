@@ -40,7 +40,7 @@ class Address(models.Model):
     country = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     is_default = models.BooleanField(default=False)
-    status  =models.CharField(default='listed')
+    status  =models.CharField(max_length=20,default='listed')
 
     def full_address(self):
         """Returns the full address as a single string."""

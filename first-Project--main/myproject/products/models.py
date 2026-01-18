@@ -1,7 +1,7 @@
 from django.db import models
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
-
+from cloudinary.models import CloudinaryField
 
 class Categories(models.Model):
     brand_name = models.CharField(max_length=100)
@@ -9,7 +9,7 @@ class Categories(models.Model):
     status = models.CharField(max_length=10, default='listed')
     offer = models.DecimalField(max_digits=8, decimal_places=2, default=0) 
     featured = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = CloudinaryField('image',blank=True, null=True)
 
     def __str__(self):
         return self.brand_name 
@@ -19,8 +19,7 @@ class Types(models.Model):
     active = models.BooleanField(default=True)
     status = models.CharField(max_length=10, default='listed')
     offer = models.DecimalField(max_digits=8, decimal_places=2, default=0,) 
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
-
+    image = CloudinaryField('image',blank=True, null=True)
     def __str__(self):
         return self.category 
  
@@ -112,7 +111,7 @@ class Product(models.Model):
     
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='additional_images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='product_images/extra/')
+    image = CloudinaryField('image',blank=True, null=True)
 
 
 class ProductSize(models.Model):
