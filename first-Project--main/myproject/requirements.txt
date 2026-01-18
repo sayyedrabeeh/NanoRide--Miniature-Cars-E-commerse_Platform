@@ -54,3 +54,4 @@ zopfli==0.2.3.post1
 cloudinary
 django-cloudinary-storage
 gunicorn
+dj-database-url==2.1.0
