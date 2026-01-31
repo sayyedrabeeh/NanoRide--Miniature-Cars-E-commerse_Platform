@@ -23,6 +23,7 @@ from decouple import config
 import os
 import dj_database_url
 
+ 
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,9 +35,11 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='fallback-secret-key')
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['*']
 
  
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Application definition
